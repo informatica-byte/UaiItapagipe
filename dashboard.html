@@ -3,83 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uai Sô Itapagipe - Turismo e Entretenimento</title>
+    <title>Gerenciador Uai Sô - Simples e Fácil</title>
     <style>
+        :root { --primary: #8b0000; --secondary: #003049; --accent: #fcbf49; --bg: #f4f6f9; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f9f6f0; color: #333; line-height: 1.6; }
-        header { background: linear-gradient(rgba(139, 0, 0, 0.85), rgba(139, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover; color: #fff; text-align: center; padding: 60px 20px; }
-        header h1 { font-size: 3rem; margin-bottom: 10px; }
-        nav { background-color: #d62828; position: sticky; top: 0; z-index: 1000; text-align: center; }
-        nav a { display: inline-block; color: white; padding: 14px 20px; text-decoration: none; font-weight: bold; }
-        nav a:hover { background-color: #fcbf49; color: #003049; }
-        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
-        section { background: white; padding: 30px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { color: #8b0000; border-bottom: 3px solid #fcbf49; padding-bottom: 5px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: #fdfaf6; border: 1px solid #eee; border-radius: 8px; overflow: hidden; padding: 15px; }
-        .card h3 { color: #d62828; margin-bottom: 10px; }
-        footer { background-color: #003049; color: white; text-align: center; padding: 20px; margin-top: 40px; }
+        body { background-color: var(--bg); display: flex; min-height: 100vh; }
+
+        /* Barra Lateral */
+        .sidebar { width: 280px; background: var(--primary); color: white; padding: 25px; display: flex; flex-direction: column; }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .sidebar a { color: white; text-decoration: none; padding: 12px; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; display: block; }
+        .sidebar a:hover { background: rgba(255,255,255,0.2); }
+
+        /* Conteúdo */
+        .main { flex: 1; padding: 40px; overflow-y: auto; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        h1 { color: var(--secondary); margin-bottom: 20px; }
+        
+        /* Formulário */
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--accent); }
+        .btn-save { background: var(--secondary); color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; }
+        .btn-save:hover { background: var(--primary); }
+
+        /* Lista de Itens Existentes */
+        .item-lista { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
+        .item-lista:last-child { border: none; }
+        .item-info h4 { color: var(--primary); }
+        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .tag { font-size: 0.7rem; background: #eee; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Uai Sô Itapagipe!</h1>
-        <p>Descubra as belezas, o aconchego e a energia do Triângulo Mineiro</p>
-    </header>
-
-    <nav>
-        <a href="#turismo">Turismo</a>
-        <a href="#eventos">Entretenimento</a>
-    </nav>
-
-    <div class="container">
-
-        <section id="turismo">
-            <h2>Turismo e Lazer</h2>
-            <div class="grid" id="conteudo-turismo">
-                <div class="card">
-                    <h3>Rio Grande e Ranchos</h3>
-                    <p>Perfeito para quem busca descanso, pesca esportiva e esportes náuticos.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="eventos">
-            <h2>Entretenimento e Cultura</h2>
-            <div class="grid" id="conteudo-eventos">
-                <div class="card">
-                    <h3>Festa do Peão (EXPOITA)</h3>
-                    <p>O evento mais aguardado do ano com grandes shows e montarias!</p>
-                </div>
-            </div>
-        </section>
-
+    <div class="sidebar">
+        <h2>ADMINISTRAÇÃO</h2>
+        <a href="index.html">⬅️ Sair do Painel</a>
+        <p style="margin-top: auto; font-size: 0.8rem; opacity: 0.7;">Conectado a: Firebase Realtime</p>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Uai Sô Itapagipe - Guia Local.</p>
-    </footer>
+    <div class="main">
+        <h1>Painel de Controle Itapagipe</h1>
+
+        <div class="card">
+            <h2 style="margin-bottom: 20px; color: var(--primary);">✨ Adicionar Novo Conteúdo</h2>
+            <form id="formConteudo">
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Onde vai aparecer?</label>
+                        <select id="tipo" required>
+                            <option value="turismo">Turismo e Lazer</option>
+                            <option value="eventos">Entretenimento e Cultura</option>
+                            <option value="gastronomia">Onde Comer (Gastronomia)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Título (Nome do local/festa)</label>
+                        <input type="text" id="titulo" placeholder="Ex: Rancho do Sol" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Texto de Descrição</label>
+                    <textarea id="descricao" placeholder="Explique os detalhes aqui..." required></textarea>
+                </div>
+
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Link da Foto (URL)</label>
+                        <input type="url" id="imagem" placeholder="https://linkdafoto.com/imagem.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label>Link de Vídeo (YouTube)</label>
+                        <input type="url" id="video" placeholder="https://youtube.com/watch?v=...">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-save">🚀 Publicar no Site Agora</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-bottom: 20px; color: var(--secondary);">📋 Itens Publicados (Gerenciar)</h2>
+            <div id="listaItens">
+                <p>Carregando itens...</p>
+            </div>
+        </div>
+    </div>
 
     <script>
-        function carregarConteudoDinamico(tipo, containerId) {
-            const container = document.getElementById(containerId);
-            const itens = JSON.parse(localStorage.getItem(tipo)) || [];
+        const API_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo";
 
-            itens.forEach(item => {
-                // Criar a estrutura do card para cada item salvo
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<h3>${item.titulo}</h3><p>${item.descricao}</p>`;
-                container.appendChild(card);
+        // FUNÇÃO PARA SALVAR
+        document.getElementById('formConteudo').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "Salvando...";
+
+            const novoItem = {
+                tipo: document.getElementById('tipo').value,
+                titulo: document.getElementById('titulo').value,
+                descricao: document.getElementById('descricao').value,
+                imagem: document.getElementById('imagem').value,
+                video: document.getElementById('video').value
+            };
+
+            await fetch(`${API_URL}.json`, {
+                method: 'POST',
+                body: JSON.stringify(novoItem)
             });
+
+            alert("Sucesso! O site foi atualizado.");
+            location.reload();
+        });
+
+        // FUNÇÃO PARA CARREGAR LISTA E EXCLUIR
+        async function carregarLista() {
+            const res = await fetch(`${API_URL}.json`);
+            const dados = await res.json();
+            const container = document.getElementById('listaItens');
+            container.innerHTML = "";
+
+            if(!dados) {
+                container.innerHTML = "<p>Nenhum item cadastrado.</p>";
+                return;
+            }
+
+            for (let id in dados) {
+                const item = dados[id];
+                container.innerHTML += `
+                    <div class="item-lista">
+                        <div class="item-info">
+                            <span class="tag">${item.tipo}</span>
+                            <h4>${item.titulo}</h4>
+                        </div>
+                        <button class="btn-delete" onclick="excluirItem('${id}')">Excluir</button>
+                    </div>
+                `;
+            }
         }
 
-        // Executa a função assim que a página abre
-        window.onload = function() {
-            carregarConteudoDinamico('turismo', 'conteudo-turismo');
-            carregarConteudoDinamico('eventos', 'conteudo-eventos');
-        };
+        async function excluirItem(id) {
+            if(confirm("Tem certeza que deseja apagar este item do site?")) {
+                await fetch(`${API_URL}/${id}.json`, { method: 'DELETE' });
+                location.reload();
+            }
+        }
+
+        carregarLista();
     </script>
 </body>
 </html>

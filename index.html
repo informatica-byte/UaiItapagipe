@@ -110,6 +110,13 @@
             color: #d62828;
             margin-bottom: 10px;
         }
+        
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
 
         /* Rodapé */
         footer {
@@ -142,7 +149,7 @@
         <a href="#turismo">Turismo</a>
         <a href="#eventos">Entretenimento</a>
         <a href="#contato">Contato</a>
-        <!-- Botão Suporte Restrito adicionado mantendo integridade do layout -->
+        <!-- Botão Suporte Restrito com Senha -->
         <a href="#" onclick="acessarSuporte(event)" style="background-color: #003049; color: #fcbf49; border-radius: 4px; margin-left: 10px;">🔒 Suporte</a>
     </nav>
 
@@ -158,7 +165,8 @@
         <!-- Seção Turismo -->
         <section id="turismo">
             <h2>Turismo e Lazer</h2>
-            <div class="grid">
+            <div class="grid" id="grid-turismo">
+                <!-- Conteúdo Inicial Padrão (Será substituído pelos dados que você cadastrar no Painel) -->
                 <div class="card">
                     <div class="card-content">
                         <h3>Rio Grande e Ranchos</h3>
@@ -168,13 +176,7 @@
                 <div class="card">
                     <div class="card-content">
                         <h3>Praças e Convivência</h3>
-                        <p>As praças da cidade são o ponto de encontro de todas as gerações. Lugar ideal para tomar um sorvete, bater um papo furado e curtir o final de tarde.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-content">
-                        <h3>Culinária Mineira</h3>
-                        <p>Visitar Itapagipe e não provar do legítimo queijo mineiro, do pão de queijo quentinho ou daquela comidinha caseira feita no fogão a lenha é um pecado!</p>
+                        <p>As praças da cidade são o ponto de encontro de todas as generations. Lugar ideal para tomar um sorvete, bater um papo furado e curtir o final de tarde.</p>
                     </div>
                 </div>
             </div>
@@ -183,23 +185,18 @@
         <!-- Seção Eventos -->
         <section id="eventos">
             <h2>Entretenimento e Cultura</h2>
-            <div class="grid">
+            <div class="grid" id="grid-eventos">
+                <!-- Conteúdo Inicial Padrão (Será substituído pelos dados que você cadastrar no Painel) -->
                 <div class="card">
                     <div class="card-content">
                         <h3>Festa do Peão (EXPOITA)</h3>
                         <p>O evento mais aguardado do ano! Atrai milhares de visitantes com grandes shows de artistas nacionais, montarias profissionais em touros e cavalos, e muita tradição sertaneja.</p>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-content">
-                        <h3>Festas Juninas e Cavalgadas</h3>
-                        <p>A cultura raiz se mantém viva através das tradicionais cavalgadas que reúnem comitivas de toda a região, além dos animados arraiás comunitários.</p>
-                    </div>
-                </div>
             </div>
         </section>
 
-        <!-- Seção Contato/Sugestões -->
+        <!-- Seção Contato -->
         <section id="contato">
             <h2>Divulgue seu Evento ou Comércio</h2>
             <p>Tem um rancho para alugar, um restaurante ou quer divulgar um evento em Itapagipe? Entre em contato conosco para adicionarmos à página!</p>
@@ -213,23 +210,93 @@
         <p>&copy; 2026 Uai Sô Itapagipe - Guia de Turismo e Entretenimento Local.</p>
     </footer>
 
-    <!-- Script de validação de acesso ao Dashboard via Suporte -->
+    <!-- Sistema Automático que conecta com o Banco de Dados Firebase e valida a senha -->
     <script>
+        // Link do seu banco de dados informado
+        const FIREBASE_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com/";
+
+        // 1. Função que pede a senha ao clicar em "Suporte"
         function acessarSuporte(event) {
             event.preventDefault();
-            
-            // Define a senha padrão para o protótipo
-            const senhaCorreta = "admin123"; 
-            
-            const senhaDigitada = prompt("Digite a senha de suporte para acessar o Painel de Controle:");
+            const senhaCorreta = "admin123"; // Defina sua senha aqui
+            const senhaDigitada = prompt("Digite a senha de suporte para acessar o Painel de Controle (Dashboard):");
             
             if (senhaDigitada === senhaCorreta) {
-                alert("Acesso autorizado! Redirecionando...");
+                alert("Acesso autorizado! Redirecionando para o Dashboard...");
                 window.location.href = "dashboard.html";
             } else if (senhaDigitada !== null) {
                 alert("Senha incorreta! Acesso negado.");
             }
         }
+
+        // Extrai o ID do vídeo do YouTube para criar a caixinha do player
+        function extrairIDYouTube(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        // 2. Função automática que lê os textos, fotos e vídeos salvos no seu painel
+        async function buscarDadosDoPainel() {
+            try {
+                const response = await fetch(`${FIREBASE_URL}/conteudo.json`);
+                const dados = await response.json();
+
+                if (dados) {
+                    const gridTurismo = document.getElementById('grid-turismo');
+                    const gridEventos = document.getElementById('grid-eventos');
+
+                    let htmlTurismo = "";
+                    let htmlEventos = "";
+                    let temTurismo = false;
+                    let temEventos = false;
+
+                    for (let id in dados) {
+                        const item = dados[id];
+                        
+                        // Configura Mídia (prioriza vídeo do YouTube, se não houver, coloca a Imagem)
+                        let midiaHtml = "";
+                        if (item.video) {
+                            const videoId = extrairIDYouTube(item.video);
+                            if (videoId) {
+                                midiaHtml = `<iframe style="width:100%; height:180px; border:none;" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+                            }
+                        } else if (item.imagem) {
+                            midiaHtml = `<img src="${item.imagem}" class="card-img" alt="${item.titulo}">`;
+                        }
+
+                        // Monta o quadradinho (card) com o título e a descrição criados no painel
+                        const cardHtml = `
+                            <div class="card">
+                                ${midiaHtml}
+                                <div class="card-content">
+                                    <h3>${item.titulo}</h3>
+                                    <p>${item.descricao}</p>
+                                </div>
+                            </div>
+                        `;
+
+                        // Distribui nas seções corretas de acordo com o que foi selecionado no Dashboard
+                        if (item.tipo === 'turismo' || item.tipo === 'gastronomia') {
+                            htmlTurismo += cardHtml;
+                            temTurismo = true;
+                        } else if (item.tipo === 'eventos') {
+                            htmlEventos += cardHtml;
+                            temEventos = true;
+                        }
+                    }
+
+                    // Aplica as mudanças visualmente na página de forma automática
+                    if (temTurismo) gridTurismo.innerHTML = htmlTurismo;
+                    if (temEventos) gridEventos.innerHTML = htmlEventos;
+                }
+            } catch (erro) {
+                console.error("Aviso: Não foi possível carregar os dados online do painel.", erro);
+            }
+        }
+
+        // Inicia a busca assim que a página abre
+        window.onload = buscarDadosDoPainel;
     </script>
 
 </body>
