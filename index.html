@@ -33,6 +33,12 @@
         nav a:hover, nav a:focus { background-color: var(--accent); color: var(--secondary); outline: none; transform: translateY(-1px); }
         .admin-link { color: #777; font-size: 0.75rem; font-weight: 400; opacity: 0.65; }
         .admin-link:hover, .admin-link:focus { color: var(--accent); opacity: 1; outline: none; }
+        .info-strip { max-width: 1120px; margin: 18px auto 0; padding: 0 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+        .info-pill { background: rgba(255,255,255,0.88); border: 1px solid rgba(6,70,99,0.1); border-left: 5px solid var(--leaf); border-radius: 8px; box-shadow: 0 8px 22px rgba(0,48,73,0.07); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 74px; }
+        .info-label { color: var(--muted); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+        .info-value { color: var(--secondary); font-size: clamp(1.15rem, 3vw, 1.65rem); line-height: 1.1; font-weight: 900; margin-top: 3px; }
+        .info-detail { color: var(--muted); font-size: 0.86rem; margin-top: 2px; }
+        .info-icon { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; color: var(--secondary); background: var(--sky); font-weight: 900; flex: 0 0 auto; }
         .container { max-width: 1120px; margin: 24px auto; padding: 0 20px; }
         section { background: rgba(255,255,255,0.92); padding: 30px; margin-bottom: 22px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,48,73,0.08); border: 1px solid rgba(6,70,99,0.08); }
         h2 { color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 7px; margin-bottom: 20px; line-height: 1.25; }
@@ -54,6 +60,7 @@
             header { padding: 48px 16px; }
             nav { position: static; padding: 8px; }
             nav a { display: block; padding: 11px 12px; border-radius: 999px; }
+            .info-strip { grid-template-columns: 1fr; padding: 0 14px; }
             .container { padding: 0 14px; }
             section { padding: 22px 18px; }
             .grid { grid-template-columns: 1fr; }
@@ -80,6 +87,16 @@
         <a href="#gastronomia">Onde Comer</a>
         <a href="#patrocinadores">Patrocinadores</a>
     </nav>
+    <div class="info-strip" aria-label="Informações rápidas">
+        <div class="info-pill clima">
+            <div>
+                <p class="info-label">Clima em Itapagipe</p>
+                <p class="info-value" id="clima-temp">Carregando...</p>
+                <p class="info-detail" id="clima-desc">Atualizando previsão</p>
+            </div>
+            <span class="info-icon" id="clima-icon">Sol</span>
+        </div>
+    </div>
     <div class="container">
         <section id="sobre">
             <p class="section-kicker">Conheça a cidade</p>
@@ -112,7 +129,10 @@
         <p style="margin-top: 10px;"><a href="dashboard.html" class="admin-link">Área restrita</a></p>
     </footer>
     <script>
-        const FIREBASE_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo.json";
+        const FIREBASE_BASE_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com";
+        const FIREBASE_URL = `${FIREBASE_BASE_URL}/conteudo.json`;
+        const ACESSOS_URL = `${FIREBASE_BASE_URL}/metricas/acessos.json`;
+        const CLIMA_URL = "https://api.open-meteo.com/v1/forecast?latitude=-19.9066&longitude=-49.3786&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=America%2FSao_Paulo";
 
 
         function getYT(url) {
@@ -141,6 +161,66 @@
 
         function escapeHTML(valor) {
             return String(valor || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+        }
+
+        function descricaoClima(codigo) {
+            const mapa = {
+                0: ['Céu limpo', 'Sol'],
+                1: ['Principalmente limpo', 'Sol'],
+                2: ['Parcialmente nublado', 'Sol'],
+                3: ['Nublado', 'Nuv'],
+                45: ['Neblina', 'Neb'],
+                48: ['Neblina com geada', 'Neb'],
+                51: ['Garoa leve', 'Chu'],
+                53: ['Garoa moderada', 'Chu'],
+                55: ['Garoa forte', 'Chu'],
+                61: ['Chuva fraca', 'Chu'],
+                63: ['Chuva moderada', 'Chu'],
+                65: ['Chuva forte', 'Chu'],
+                80: ['Pancadas leves', 'Chu'],
+                81: ['Pancadas moderadas', 'Chu'],
+                82: ['Pancadas fortes', 'Chu'],
+                95: ['Trovoadas', 'Tro']
+            };
+            return mapa[codigo] || ['Tempo atualizado', 'Cli'];
+        }
+
+        async function carregarClima() {
+            try {
+                const res = await fetch(CLIMA_URL);
+                if (!res.ok) throw new Error('Falha ao carregar clima');
+                const dados = await res.json();
+                const atual = dados.current;
+                const [descricao, icone] = descricaoClima(atual.weather_code);
+                document.getElementById('clima-temp').innerText = `${Math.round(atual.temperature_2m)}°C`;
+                document.getElementById('clima-desc').innerText = `${descricao} | Umidade ${atual.relative_humidity_2m}% | Vento ${Math.round(atual.wind_speed_10m)} km/h`;
+                document.getElementById('clima-icon').innerText = icone;
+            } catch (erro) {
+                console.error(erro);
+                document.getElementById('clima-temp').innerText = 'Indisponível';
+                document.getElementById('clima-desc').innerText = 'Não foi possível atualizar o clima agora.';
+            }
+        }
+
+        async function registrarAcesso() {
+            try {
+                const resAtual = await fetch(ACESSOS_URL);
+                if (!resAtual.ok) throw new Error('Falha ao ler acessos');
+                const totalAtual = Number(await resAtual.json()) || 0;
+                const jaContou = sessionStorage.getItem('uai-so-acesso-contado') === 'sim';
+                const novoTotal = jaContou ? totalAtual : totalAtual + 1;
+                if (!jaContou) {
+                    const resSalvar = await fetch(ACESSOS_URL, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(novoTotal)
+                    });
+                    if (!resSalvar.ok) throw new Error('Falha ao salvar acesso');
+                    sessionStorage.setItem('uai-so-acesso-contado', 'sim');
+                }
+            } catch (erro) {
+                console.error(erro);
+            }
         }
 
         function cardMidia(item) {
@@ -212,6 +292,8 @@
             }
         }
 
+        carregarClima();
+        registrarAcesso();
         carregar();
     </script>
 </body>

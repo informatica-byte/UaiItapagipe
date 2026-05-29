@@ -30,6 +30,11 @@
         .sidebar-status { margin-top: auto; font-size: 0.8rem; opacity: 0.75; overflow-wrap: anywhere; }
         .main { flex: 1; padding: 40px; overflow-y: auto; }
         .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px; }
+        .stat-card { background: white; border-left: 5px solid var(--accent); padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .stat-label { color: var(--muted); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+        .stat-value { color: var(--secondary); font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; font-weight: 900; margin-top: 6px; }
+        .stat-detail { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
         h1 { color: var(--secondary); margin-bottom: 20px; }
         h2 { line-height: 1.25; }
         .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -100,6 +105,13 @@
         </aside>
         <main class="main">
             <h1>Dashboard Administrável</h1>
+            <div class="stats-grid" aria-label="Estatísticas do site">
+                <section class="stat-card">
+                    <p class="stat-label">Acessos ao site</p>
+                    <p class="stat-value" id="dashboard-acessos">Carregando...</p>
+                    <p class="stat-detail" id="dashboard-acessos-status">Total registrado na página principal</p>
+                </section>
+            </div>
             <section class="card">
                 <h2 id="form-titulo" style="margin-bottom: 20px; color: #8b0000;">Novo conteúdo ou patrocinador</h2>
                 <form id="formConteudo">
@@ -171,6 +183,7 @@
             measurementId: "G-473FXMD3SK"
         };
         const API_URL = `${FIREBASE_CONFIG.databaseURL}/conteudo`;
+        const ACESSOS_URL = `${FIREBASE_CONFIG.databaseURL}/metricas/acessos`;
         const AUTH_KEY = 'uai-so-admin-auth';
         let cacheDados = {};
         let authState = null;
@@ -261,6 +274,11 @@
             return token ? `${final}?auth=${encodeURIComponent(token)}` : final;
         }
 
+        function urlAcessos(token = null) {
+            const final = `${ACESSOS_URL}.json`;
+            return token ? `${final}?auth=${encodeURIComponent(token)}` : final;
+        }
+
         async function fetchAutenticado(caminho, opcoes = {}) {
             const token = await obterToken();
             if (!token) throw new Error('Sessão expirada');
@@ -298,6 +316,25 @@
             document.getElementById('usuario-logado').textContent = authState?.email || 'administrador';
         }
 
+        async function carregarAcessos() {
+            const total = document.getElementById('dashboard-acessos');
+            const status = document.getElementById('dashboard-acessos-status');
+            total.innerText = 'Carregando...';
+            status.innerText = 'Total registrado na página principal';
+            try {
+                const token = await obterToken();
+                if (!token) throw new Error('Sessão expirada');
+                const res = await fetch(urlAcessos(token));
+                if (!res.ok) throw new Error('Falha ao carregar acessos');
+                const valor = Number(await res.json()) || 0;
+                total.innerText = valor.toLocaleString('pt-BR');
+            } catch (erro) {
+                console.error(erro);
+                total.innerText = 'Indisponível';
+                status.innerText = 'Verifique as regras do Firebase em /metricas/acessos.';
+            }
+        }
+
         function mostrarLogin() {
             appView.classList.add('hidden');
             loginView.classList.remove('hidden');
@@ -312,6 +349,7 @@
                 await entrar(document.getElementById('login-email').value.trim(), document.getElementById('login-senha').value);
                 mostrarLoginStatus('Acesso liberado.', 'sucesso');
                 mostrarApp();
+                await carregarAcessos();
                 await carregarLista();
             } catch (erro) {
                 console.error(erro);
@@ -533,6 +571,7 @@
                 return;
             }
             mostrarApp();
+            await carregarAcessos();
             await carregarLista();
         }
 
