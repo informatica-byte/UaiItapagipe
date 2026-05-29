@@ -3,405 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Uai Sô Itapagipe!</title>
-
-    <meta name="description" content="Portal turístico e cultural de Itapagipe MG.">
-    <meta name="keywords" content="Itapagipe, turismo, eventos, restaurantes, Minas Gerais">
-    <meta property="og:title" content="Uai Sô Itapagipe">
-    <meta property="og:type" content="website">
-
     <style>
-        :root {
-            --primary: #8b0000;
-            --secondary: #003049;
-            --accent: #fcbf49;
-            --bg: #f9f6f0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: #333;
-            line-height: 1.6;
-            transition: background .3s ease, color .3s ease;
-        }
-
-        .dark-mode {
-            background: #121212;
-            color: #eee;
-        }
-
-        .dark-mode section {
-            background: #1e1e1e;
-        }
-
-        .dark-mode .card {
-            background: #252525;
-            border-color: #333;
-        }
-
-        header {
-            background:
-                linear-gradient(rgba(139,0,0,.85), rgba(139,0,0,.85)),
-                url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80')
-                no-repeat center center/cover;
-
-            color: white;
-            text-align: center;
-            padding: 70px 20px;
-        }
-
-        nav {
-            background: #d62828;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            text-align: center;
-        }
-
-        nav a {
-            display: inline-block;
-            color: white;
-            padding: 14px 20px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: .3s ease;
-        }
-
-        nav a:hover {
-            background: var(--accent);
-            color: var(--secondary);
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            margin-bottom: 20px;
-            font-size: 1rem;
-        }
-
-        section {
-            background: white;
-            padding: 30px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,.05);
-        }
-
-        h2 {
-            color: var(--primary);
-            border-bottom: 3px solid var(--accent);
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: #fdfaf6;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform .3s ease, box-shadow .3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,.15);
-        }
-
-        .card-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 15px;
-        }
-
-        .patrocinios {
-            background: #003049;
-            color: white;
-            padding: 40px 20px;
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        footer {
-            background: #111;
-            color: #ccc;
-            text-align: center;
-            padding: 25px 20px;
-            border-top: 3px solid #d62828;
-        }
-
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .theme-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            border: none;
-            border-radius: 50%;
-            padding: 15px;
-            cursor: pointer;
-            background: #003049;
-            color: white;
-            font-size: 1rem;
-            z-index: 999;
-        }
-
-        @media(max-width:768px) {
-            nav a {
-                display: block;
-                border-bottom: 1px solid rgba(255,255,255,.1);
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            header {
-                padding: 50px 20px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f9f6f0; color: #333; line-height: 1.6; }
+        header { background: linear-gradient(rgba(139, 0, 0, 0.85), rgba(139, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover; color: #fff; text-align: center; padding: 60px 20px; }
+        nav { background-color: #d62828; position: sticky; top: 0; z-index: 1000; text-align: center; }
+        nav a { display: inline-block; color: white; padding: 14px 20px; text-decoration: none; font-weight: bold; }
+        nav a:hover { background-color: #fcbf49; color: #003049; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
+        section { background: white; padding: 30px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { color: #8b0000; border-bottom: 3px solid #fcbf49; padding-bottom: 5px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: #fdfaf6; border: 1px solid #eee; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .card-content { padding: 15px; }
+        .card-img { width: 100%; height: 180px; object-fit: cover; }
+        .patrocinios { background: #003049; color: white; padding: 40px 20px; margin-top: 40px; text-align: center; }
+        footer { background-color: #111; color: #ccc; text-align: center; padding: 25px 20px; font-size: 0.9rem; border-top: 3px solid #d62828; }
+        footer a { color: #fcbf49; text-decoration: none; font-weight: bold; }
     </style>
 </head>
-
 <body>
+    <header><h1>Uai Sô Itapagipe!</h1><p>O Portal da nossa terra!</p></header>
+    <nav>
+        <a href="#sobre">A Cidade</a><a href="#turismo">Turismo</a><a href="#eventos">Entretenimento</a><a href="#patrocinadores">Patrocinadores</a>
+        <a href="#" onclick="acessarSuporte(event)" style="background:#000; color:#fcbf49; border-radius:4px; margin-left:10px;">🔒 Dashboard</a>
+    </nav>
+    <div class="container">
+        <section id="sobre">
+            <h2 id="cidade-titulo">Sobre Itapagipe - MG</h2>
+            <p id="cidade-texto">Carregando história da cidade...</p>
+        </section>
+        <section id="turismo"><h2>Turismo e Lazer</h2><div class="grid" id="grid-turismo"></div></section>
+        <section id="eventos"><h2>Entretenimento</h2><div class="grid" id="grid-eventos"></div></section>
+    </div>
+    <div class="patrocinios" id="patrocinadores">
+        <h2 style="color:#fcbf49; border-bottom:none; margin-bottom: 20px;">Nossos Patrocinadores e Parceiros</h2>
+        <div class="grid" id="grid-patrocinios"></div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 Uai Sô Itapagipe - Guia de Turismo e Entretenimento Local.</p>
+        <p style="margin-top: 8px; font-size: 0.8rem; opacity: 0.8;">Desenvolvido com ❤️ por <a href="#">Adolfo Queiroz</a></p>
+    </footer>
 
-<header>
-    <h1>Uai Sô Itapagipe!</h1>
-    <p>O Portal da nossa terra!</p>
-</header>
-
-<nav>
-    <a href="#sobre">A Cidade</a>
-    <a href="#turismo">Turismo</a>
-    <a href="#eventos">Entretenimento</a>
-    <a href="#patrocinadores">Patrocinadores</a>
-
-    <a href="#" onclick="acessarSuporte(event)"
-       style="background:#000;color:#fcbf49;border-radius:4px;margin-left:10px;">
-       🔒 Dashboard
-    </a>
-</nav>
-
-<div class="container">
-    <input type="text"
-           class="search-box"
-           id="busca"
-           placeholder="Pesquisar turismo, eventos, restaurantes...">
-
-    <section id="sobre">
-        <h2 id="cidade-titulo">Sobre Itapagipe - MG</h2>
-        <p id="cidade-texto">Carregando história da cidade...</p>
-    </section>
-
-    <section id="turismo">
-        <h2>Turismo e Lazer</h2>
-        <div class="grid" id="grid-turismo"></div>
-    </section>
-
-    <section id="eventos">
-        <h2>Entretenimento</h2>
-        <div class="grid" id="grid-eventos"></div>
-    </section>
-</div>
-
-<div class="patrocinios" id="patrocinadores">
-    <h2 style="color:#fcbf49;border-bottom:none;">Nossos Patrocinadores</h2>
-    <div class="grid" id="grid-patrocinios"></div>
-</div>
-
-<footer>
-    <p>&copy; 2026 Uai Sô Itapagipe</p>
-    <p style="margin-top:8px;">
-        Desenvolvido com ❤️ por Adolfo Queiroz
-    </p>
-</footer>
-
-<button class="theme-btn" onclick="toggleTheme()">🌙</button>
-
-<script>
-
-const FIREBASE_URL =
-"https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo.json";
-
-function acessarSuporte(event) {
-
-    event.preventDefault();
-
-    const senha = prompt("Digite a senha do painel:");
-
-    if(!senha) return;
-
-    if(senha === "admin123") {
-        location.href = "dashboard.html";
-    } else {
-        alert("Senha incorreta");
-    }
-}
-
-function getYT(url) {
-
-    const regExp =
-    /^.*(youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=|\\&v=)([^#\\&\\?]*).*/;
-
-    const match = url.match(regExp);
-
-    return (match && match[2].length === 11)
-        ? match[2]
-        : null;
-}
-
-async function carregar() {
-
-    try {
-
-        const res = await fetch(FIREBASE_URL);
-        const dados = await res.json();
-
-        if(!dados) return;
-
-        const grids = {
-            turismo: [],
-            eventos: [],
-            patrocinadores: []
-        };
-
-        let ultimaCidade = null;
-
-        const itensOrdenados =
-            Object.entries(dados)
-            .sort((a,b)=>(b[1].data||0)-(a[1].data||0));
-
-        for(let [id,item] of itensOrdenados) {
-
-            if(item.tipo === 'cidade') {
-                ultimaCidade = item;
-                continue;
-            }
-
-            const midia = item.video
-                ? `<iframe loading="lazy"
-                    style="width:100%;height:200px;border:none;"
-                    src="https://www.youtube.com/embed/${getYT(item.video)}">
-                   </iframe>`
-                : item.imagem
-                    ? `<img loading="lazy"
-                            src="${item.imagem}"
-                            class="card-img">`
-                    : "";
-
-            const html = `
-                <div class="card searchable">
-                    ${midia}
-                    <div class="card-content">
-                        <h3>${item.titulo}</h3>
-                        <p>${item.descricao}</p>
-                    </div>
-                </div>
-            `;
-
-            if(item.tipo === 'patrocinadores') {
-                grids.patrocinadores.push(html);
-            } else if(item.tipo === 'eventos') {
-                grids.eventos.push(html);
-            } else {
-                grids.turismo.push(html);
-            }
+    <script>
+        const FIREBASE_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo.json";
+        function acessarSuporte(event) { event.preventDefault(); if(prompt("Senha:")==="admin123") location.href="dashboard.html"; }
+        function getYT(url) { const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : null; }
+        async function carregar() {
+            try {
+                const res = await fetch(FIREBASE_URL);
+                const dados = await res.json();
+                if(!dados) return;
+                const grids = { turismo: "", eventos: "", patrocinadores: "" };
+                let ultimaCidade = null;
+                for(let id in dados) {
+                    const item = dados[id];
+                    if(item.tipo === 'cidade') { ultimaCidade = item; continue; }
+                    const midia = item.video ? `<iframe style="width:100%; height:180px; border:none;" src="https://www.youtube.com/embed/${getYT(item.video)}"></iframe>` : (item.imagem ? `<img src="${item.imagem}" class="card-img">` : "");
+                    const html = `<div class="card">${midia}<div class="card-content"><h3>${item.titulo}</h3><p>${item.descricao}</p></div></div>`;
+                    if(item.tipo === 'patrocinadores') grids.patrocinadores += html;
+                    else if(item.tipo === 'eventos') grids.eventos += html;
+                    else grids.turismo += html;
+                }
+                if(ultimaCidade) { document.getElementById('cidade-titulo').innerText = ultimaCidade.titulo; document.getElementById('cidade-texto').innerText = ultimaCidade.descricao; }
+                document.getElementById('grid-turismo').innerHTML = grids.turismo;
+                document.getElementById('grid-eventos').innerHTML = grids.eventos;
+                document.getElementById('grid-patrocinios').innerHTML = grids.patrocinadores;
+            } catch (e) { console.error(e); }
         }
-
-        if(ultimaCidade) {
-            document.getElementById('cidade-titulo').innerText =
-                ultimaCidade.titulo;
-
-            document.getElementById('cidade-texto').innerText =
-                ultimaCidade.descricao;
-        }
-
-        document.getElementById('grid-turismo').innerHTML =
-            grids.turismo.join('');
-
-        document.getElementById('grid-eventos').innerHTML =
-            grids.eventos.join('');
-
-        document.getElementById('grid-patrocinios').innerHTML =
-            grids.patrocinadores.join('');
-
-    } catch(e) {
-        console.error(e);
-    }
-}
-
-const busca = document.getElementById('busca');
-
-busca.addEventListener('input', function(){
-
-    const termo = this.value.toLowerCase();
-
-    document.querySelectorAll('.searchable').forEach(card=>{
-
-        const texto = card.innerText.toLowerCase();
-
-        card.style.display =
-            texto.includes(termo)
-                ? 'block'
-                : 'none';
-    });
-});
-
-function toggleTheme() {
-
-    document.body.classList.toggle('dark-mode');
-
-    localStorage.setItem(
-        'theme',
-        document.body.classList.contains('dark-mode')
-            ? 'dark'
-            : 'light'
-    );
-}
-
-window.onload = () => {
-
-    if(localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-    }
-
-    carregar();
-};
-
-</script>
-
+        carregar();
+    </script>
 </body>
 </html>

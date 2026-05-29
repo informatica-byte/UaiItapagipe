@@ -1,511 +1,212 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Painel Administrativo</title>
-
-<style>
-
-:root {
-    --primary: #8b0000;
-    --secondary: #003049;
-    --accent: #fcbf49;
-    --bg: #f4f6f9;
-}
-
-* {
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI', sans-serif;
-}
-
-body {
-    background:var(--bg);
-    display:flex;
-    flex-direction:column;
-    min-height:100vh;
-}
-
-.wrapper {
-    display:flex;
-    flex:1;
-}
-
-.sidebar {
-    width:280px;
-    background:#8b0000;
-    color:white;
-    padding:25px;
-}
-
-.sidebar h2 {
-    text-align:center;
-    margin-bottom:30px;
-    border-bottom:2px solid #fcbf49;
-    padding-bottom:10px;
-}
-
-.sidebar a {
-    display:block;
-    color:white;
-    text-decoration:none;
-    padding:12px;
-    margin-bottom:10px;
-    border-radius:8px;
-    transition:.3s ease;
-}
-
-.sidebar a:hover {
-    background:rgba(255,255,255,.15);
-}
-
-.main {
-    flex:1;
-    padding:40px;
-}
-
-.card {
-    background:white;
-    border-radius:12px;
-    padding:25px;
-    margin-bottom:25px;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
-}
-
-.grid-form {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.form-group {
-    margin-bottom:15px;
-}
-
-label {
-    display:block;
-    margin-bottom:5px;
-    font-weight:bold;
-}
-
-input, textarea, select {
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:2px solid #eee;
-    outline:none;
-    transition:.3s ease;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-    border-color:#003049;
-    box-shadow:0 0 0 4px rgba(0,48,73,.1);
-}
-
-.btn-save {
-    background:#003049;
-    color:white;
-    border:none;
-    padding:15px;
-    border-radius:8px;
-    width:100%;
-    font-size:1rem;
-    cursor:pointer;
-}
-
-.btn-delete {
-    background:#ff4d4d;
-    color:white;
-    border:none;
-    padding:10px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.btn-edit {
-    background:#fcbf49;
-    border:none;
-    padding:10px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.item-lista {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px;
-    border-bottom:1px solid #eee;
-    transition:.3s ease;
-}
-
-.item-lista:hover {
-    background:#f9f9f9;
-}
-
-.preview-img {
-    max-width:100%;
-    max-height:200px;
-    object-fit:cover;
-    border-radius:10px;
-    margin-top:10px;
-}
-
-.btn-actions {
-    display:flex;
-    gap:10px;
-}
-
-.tag {
-    background:#eee;
-    padding:4px 8px;
-    border-radius:10px;
-    font-size:.7rem;
-    text-transform:uppercase;
-}
-
-footer {
-    background:#111;
-    color:#ccc;
-    text-align:center;
-    padding:10px;
-}
-
-@media(max-width:768px){
-
-    .wrapper {
-        flex-direction:column;
-    }
-
-    .sidebar {
-        width:100%;
-    }
-
-    .grid-form {
-        grid-template-columns:1fr;
-    }
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Avançado - Uai Sô Itapagipe</title>
+    <style>
+        :root { --primary: #8b0000; --secondary: #003049; --accent: #fcbf49; --bg: #f4f6f9; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg); display: flex; min-height: 100vh; flex-direction: column; }
+        .wrapper { display: flex; flex: 1; min-height: calc(100vh - 40px); }
+        .sidebar { width: 280px; background: #8b0000; color: white; padding: 25px; display: flex; flex-direction: column; }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; text-align: center; border-bottom: 2px solid #fcbf49; padding-bottom: 10px; }
+        .sidebar a { color: white; text-decoration: none; padding: 12px; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; display: block; }
+        .sidebar a:hover { background: rgba(255,255,255,0.2); }
+        .main { flex: 1; padding: 40px; overflow-y: auto; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        h1 { color: #003049; margin-bottom: 20px; }
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 1rem; outline: none; }
+        .btn-save { background: #003049; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; }
+        .btn-save:hover { background: #8b0000; }
+        .item-lista { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
+        .btn-actions { display: flex; gap: 10px; }
+        .btn-edit { background: #fcbf49; color: #003049; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .tag { font-size: 0.7rem; background: #eee; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; margin-right: 10px; }
+        .preview-img { max-height: 80px; display: block; margin-top: 10px; border-radius: 4px; }
+        footer { background-color: #111; color: #aaa; text-align: center; padding: 10px; font-size: 0.85rem; }
+        footer strong { color: #fff; }
+    </style>
 </head>
-
 <body>
-
-<div class="wrapper">
-
-<div class="sidebar">
-    <h2>GESTÃO UAI SÔ</h2>
-
-    <a href="index.html">⬅️ Voltar ao Site</a>
-
-    <p style="margin-top:30px;font-size:.9rem;">
-        Firebase Online
-    </p>
-</div>
-
-<div class="main">
-
-<h1 style="margin-bottom:20px;">Dashboard Administrativo</h1>
-
-<div class="card">
-
-<h2 id="form-titulo"
-    style="margin-bottom:20px;color:#8b0000;">➕ Novo Conteúdo</h2>
-
-<form id="formConteudo">
-
-<input type="hidden" id="edit-id">
-<input type="hidden" id="imagem-base64">
-
-<div class="grid-form">
-
-<div class="form-group">
-<label>Categoria</label>
-
-<select id="tipo" required>
-    <option value="cidade">Cidade</option>
-    <option value="turismo">Turismo</option>
-    <option value="eventos">Eventos</option>
-    <option value="patrocinadores">Patrocinadores</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>Título</label>
-<input type="text" id="titulo" required>
-</div>
-
-</div>
-
-<div class="form-group">
-<label>Descrição</label>
-<textarea id="descricao" required></textarea>
-</div>
-
-<div class="grid-form">
-
-<div class="form-group">
-<label>Imagem</label>
-<input type="file" id="arquivo-imagem" accept="image/*">
-<img id="preview" class="preview-img" style="display:none;">
-</div>
-
-<div class="form-group">
-<label>Vídeo YouTube</label>
-<input type="url" id="video">
-</div>
-
-</div>
-
-<button type="submit" id="btn-submit" class="btn-save">
-    Publicar Agora
-</button>
-
-<button type="button"
-        id="btn-cancelar"
-        class="btn-delete"
-        style="display:none;margin-top:10px;width:100%;">
-        Cancelar
-</button>
-
-</form>
-
-</div>
-
-<div class="card">
-
-<h2 style="margin-bottom:20px;">📋 Conteúdos Publicados</h2>
-
-<div id="listaItens">
-    <p>Carregando...</p>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<footer>
-    Painel Administrativo V3
-</footer>
-
-<script>
-
-const API_URL =
-"https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo";
-
-let cacheDados = {};
-
-document.getElementById('arquivo-imagem')
-.addEventListener('change', function(e){
-
-    const file = e.target.files[0];
-
-    if(file){
-
-        const reader = new FileReader();
-
-        reader.onload = function(event){
-
-            document.getElementById('imagem-base64').value =
-                event.target.result;
-
-            const preview =
-                document.getElementById('preview');
-
-            preview.src = event.target.result;
-            preview.style.display = 'block';
-        };
-
-        reader.readAsDataURL(file);
-    }
-});
-
-document.getElementById('formConteudo')
-.addEventListener('submit', async(e)=>{
-
-    e.preventDefault();
-
-    const idEditando =
-        document.getElementById('edit-id').value;
-
-    const btn =
-        document.getElementById('btn-submit');
-
-    btn.innerHTML = "⏳ Salvando conteúdo...";
-    btn.disabled = true;
-
-    const item = {
-        tipo: document.getElementById('tipo').value,
-        titulo: document.getElementById('titulo').value,
-        descricao: document.getElementById('descricao').value,
-        imagem: document.getElementById('imagem-base64').value,
-        video: document.getElementById('video').value,
-        data: Date.now()
-    };
-
-    try {
-
-        if(idEditando){
-
-            await fetch(`${API_URL}/${idEditando}.json`, {
-                method:'PUT',
-                body: JSON.stringify(item)
-            });
-
-            alert("Conteúdo atualizado!");
-
-        } else {
-
-            await fetch(`${API_URL}.json`, {
-                method:'POST',
-                body: JSON.stringify(item)
-            });
-
-            alert("Conteúdo publicado!");
-        }
-
-        await carregarLista();
-        resgatarFormulario();
-
-    } catch(error){
-
-        console.error(error);
-        alert("Erro ao salvar conteúdo.");
-
-    } finally {
-
-        btn.innerHTML = "Publicar Agora";
-        btn.disabled = false;
-    }
-});
-
-async function carregarLista(){
-
-    const res = await fetch(`${API_URL}.json`);
-
-    const dados = await res.json();
-
-    cacheDados = dados || {};
-
-    const container =
-        document.getElementById('listaItens');
-
-    container.innerHTML = "";
-
-    if(!dados){
-        container.innerHTML =
-            "<p>Nenhum conteúdo encontrado.</p>";
-        return;
-    }
-
-    Object.entries(dados)
-    .sort((a,b)=>(b[1].data||0)-(a[1].data||0))
-    .forEach(([id,item])=>{
-
-        container.innerHTML += `
-            <div class="item-lista">
-
-                <div>
-                    <span class="tag">${item.tipo}</span>
-                    <strong>${item.titulo}</strong>
-                </div>
-
-                <div class="btn-actions">
-
-                    <button class="btn-edit"
-                            onclick="prepararEdicao('${id}')">
-                            Editar
-                    </button>
-
-                    <button class="btn-delete"
-                            onclick="excluirItem('${id}')">
-                            Excluir
-                    </button>
-
-                </div>
-
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>GESTÃO UAI SÔ</h2>
+            <a href="index.html">⬅️ Ver Site Principal</a>
+            <p style="margin-top: auto; font-size: 0.8rem; opacity: 0.7;">Firebase Realtime Online</p>
+        </div>
+        <div class="main">
+            <h1>Dashboard Administrável</h1>
+            
+            <div class="card">
+                <h2 id="form-titulo" style="margin-bottom: 20px; color: #8b0000;">➕ Novo Conteúdo ou Patrocinador</h2>
+                <form id="formConteudo">
+                    <input type="hidden" id="edit-id">
+                    <input type="hidden" id="imagem-base64">
+                    
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label>Onde vai aparecer?</label>
+                            <select id="tipo" required>
+                                <option value="cidade">Sobre a Cidade (Texto Principal)</option>
+                                <option value="turismo">Turismo e Lazer</option>
+                                <option value="eventos">Entretenimento e Cultura</option>
+                                <option value="gastronomia">Onde Comer</option>
+                                <option value="patrocinadores">Patrocinadores / Parceiros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Título / Nome da Empresa</label>
+                            <input type="text" id="titulo" placeholder="Ex: Prefeitura ou Restaurante X" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Texto / Descrição (Para "Cidade", este será o texto principal)</label>
+                        <textarea id="descricao" placeholder="Escreva o conteúdo aqui..." required></textarea>
+                    </div>
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label>Enviar Foto/Logo do Computador ou Celular</label>
+                            <input type="file" id="arquivo-imagem" accept="image/*">
+                            <img id="preview" class="preview-img" style="display:none;">
+                        </div>
+                        <div class="form-group">
+                            <label>Link de Vídeo do YouTube (Opcional)</label>
+                            <input type="url" id="video" placeholder="https://youtube.com/...">
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-submit" class="btn-save">Publicar Agora</button>
+                    <button type="button" id="btn-cancelar" class="btn-delete" style="display:none; margin-top:10px; width:100%;">Cancelar Edição</button>
+                </form>
             </div>
-        `;
-    });
-}
 
-function prepararEdicao(id){
+            <div class="card">
+                <h2 style="margin-bottom: 20px; color: #003049;">📋 Gerenciar o que já existe</h2>
+                <div id="listaItens"><p>Carregando...</p></div>
+            </div>
+        </div>
+    </div>
 
-    const item = cacheDados[id];
+    <footer>
+        <p>Painel Administrativo V2.5 &copy; 2026 | Desenvolvido por <strong>Adolfo Queiroz</strong></p>
+    </footer>
 
-    if(!item) return;
+    <script>
+        const API_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo";
+        let cacheDados = {};
 
-    document.getElementById('edit-id').value = id;
-    document.getElementById('tipo').value = item.tipo;
-    document.getElementById('titulo').value = item.titulo;
-    document.getElementById('descricao').value = item.descricao;
-    document.getElementById('imagem-base64').value = item.imagem || "";
-    document.getElementById('video').value = item.video || "";
-
-    const preview = document.getElementById('preview');
-
-    if(item.imagem){
-        preview.src = item.imagem;
-        preview.style.display = 'block';
-    } else {
-        preview.style.display = 'none';
-    }
-
-    document.getElementById('form-titulo').innerText =
-        "📝 Editando Conteúdo";
-
-    document.getElementById('btn-cancelar').style.display =
-        'block';
-
-    window.scrollTo({
-        top:0,
-        behavior:'smooth'
-    });
-}
-
-function resgatarFormulario(){
-
-    document.getElementById('formConteudo').reset();
-
-    document.getElementById('edit-id').value = "";
-
-    document.getElementById('imagem-base64').value = "";
-
-    document.getElementById('preview').style.display =
-        'none';
-
-    document.getElementById('btn-cancelar').style.display =
-        'none';
-
-    document.getElementById('form-titulo').innerText =
-        "➕ Novo Conteúdo";
-}
-
-document.getElementById('btn-cancelar')
-.addEventListener('click', resgatarFormulario);
-
-async function excluirItem(id){
-
-    if(confirm("Deseja apagar esse conteúdo?")){
-
-        await fetch(`${API_URL}/${id}.json`, {
-            method:'DELETE'
+        document.getElementById('arquivo-imagem').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('imagem-base64').value = event.target.result;
+                    const preview = document.getElementById('preview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
-        await carregarLista();
-    }
-}
+        document.getElementById('formConteudo').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const idEditando = document.getElementById('edit-id').value;
+            const btn = document.getElementById('btn-submit');
+            btn.innerText = "Processando...";
 
-carregarLista();
+            const item = {
+                tipo: document.getElementById('tipo').value,
+                titulo: document.getElementById('titulo').value,
+                descricao: document.getElementById('descricao').value,
+                imagem: document.getElementById('imagem-base64').value,
+                video: document.getElementById('video').value,
+                data: Date.now()
+            };
 
-</script>
+            if (idEditando) {
+                await fetch(`${API_URL}/${idEditando}.json`, { method: 'PUT', body: JSON.stringify(item) });
+                alert("Item atualizado com sucesso!");
+            } else {
+                await fetch(`${API_URL}.json`, { method: 'POST', body: JSON.stringify(item) });
+                alert("Novo item publicado com sucesso!");
+            }
+            resgatarFormulario();
+            location.reload();
+        });
 
+        async function carregarLista() {
+            const res = await fetch(`${API_URL}.json`);
+            const dados = await res.json();
+            cacheDados = dados || {};
+            const container = document.getElementById('listaItens');
+            container.innerHTML = "";
+            if(!dados) { container.innerHTML = "<p>Nenhum item publicado encontrado.</p>"; return; }
+            
+            for (let id in dados) {
+                const item = dados[id];
+                container.innerHTML += `
+                    <div class="item-lista">
+                        <div>
+                            <span class="tag">${item.tipo}</span>
+                            <strong>${item.titulo}</strong>
+                        </div>
+                        <div class="btn-actions">
+                            <button class="btn-edit" onclick="prepararEdicao('${id}')">Editar</button>
+                            <button class="btn-delete" onclick="excluirItem('${id}')">Excluir</button>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function prepararEdicao(id) {
+            const item = cacheDados[id];
+            if(!item) return;
+
+            document.getElementById('edit-id').value = id;
+            document.getElementById('tipo').value = item.tipo;
+            document.getElementById('titulo').value = item.titulo;
+            document.getElementById('descricao').value = item.descricao;
+            document.getElementById('imagem-base64').value = item.imagem || "";
+            document.getElementById('video').value = item.video || "";
+
+            const preview = document.getElementById('preview');
+            if (item.imagem) {
+                preview.src = item.imagem;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+
+            document.getElementById('form-titulo').innerText = "📝 Editando Conteúdo";
+            document.getElementById('btn-submit').innerText = "Salvar Alterações";
+            document.getElementById('btn-cancelar').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resgatarFormulario() {
+            document.getElementById('formConteudo').reset();
+            document.getElementById('edit-id').value = "";
+            document.getElementById('imagem-base64').value = "";
+            document.getElementById('preview').style.display = 'none';
+            document.getElementById('form-titulo').innerText = "➕ Novo Conteúdo ou Patrocinador";
+            document.getElementById('btn-submit').innerText = "Publicar Agora";
+            document.getElementById('btn-cancelar').style.display = 'none';
+        }
+
+        document.getElementById('btn-cancelar').addEventListener('click', resgatarFormulario);
+
+        async function excluirItem(id) {
+            if(confirm("Tem certeza que deseja apagar permanentemente esse item do site?")) {
+                await fetch(`${API_URL}/${id}.json`, { method: 'DELETE' });
+                location.reload();
+            }
+        }
+        carregarLista();
+    </script>
 </body>
 </html>
