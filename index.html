@@ -142,6 +142,8 @@
         <a href="#turismo">Turismo</a>
         <a href="#eventos">Entretenimento</a>
         <a href="#contato">Contato</a>
+        <!-- Botão Suporte Restrito adicionado mantendo integridade do layout -->
+        <a href="#" onclick="acessarSuporte(event)" style="background-color: #003049; color: #fcbf49; border-radius: 4px; margin-left: 10px;">🔒 Suporte</a>
     </nav>
 
     <!-- Conteúdo -->
@@ -210,6 +212,25 @@
     <footer>
         <p>&copy; 2026 Uai Sô Itapagipe - Guia de Turismo e Entretenimento Local.</p>
     </footer>
+
+    <!-- Script de validação de acesso ao Dashboard via Suporte -->
+    <script>
+        function acessarSuporte(event) {
+            event.preventDefault();
+            
+            // Define a senha padrão para o protótipo
+            const senhaCorreta = "admin123"; 
+            
+            const senhaDigitada = prompt("Digite a senha de suporte para acessar o Painel de Controle:");
+            
+            if (senhaDigitada === senhaCorreta) {
+                alert("Acesso autorizado! Redirecionando...");
+                window.location.href = "dashboard.html";
+            } else if (senhaDigitada !== null) {
+                alert("Senha incorreta! Acesso negado.");
+            }
+        }
+    </script>
 
 </body>
 </html>
