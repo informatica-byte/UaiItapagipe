@@ -1,56 +1,112 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Avançado - Uai Sô Itapagipe</title>
+    <title>Painel Avançado - Uai Só Itapagipe</title>
     <style>
-        :root { --primary: #8b0000; --secondary: #003049; --accent: #fcbf49; --bg: #f4f6f9; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg); display: flex; min-height: 100vh; flex-direction: column; }
+        :root {
+            --primary: #8b0000;
+            --secondary: #003049;
+            --accent: #fcbf49;
+            --danger: #d62828;
+            --bg: #f4f6f9;
+            --text: #263238;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        .hidden { display: none !important; }
+        .login-shell { min-height: calc(100vh - 40px); display: grid; place-items: center; padding: 24px; }
+        .login-card { width: min(100%, 420px); background: #fff; padding: 28px; border-radius: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+        .login-card h1 { color: var(--secondary); margin-bottom: 8px; font-size: 1.7rem; }
+        .login-card p { color: var(--muted); margin-bottom: 22px; }
         .wrapper { display: flex; flex: 1; min-height: calc(100vh - 40px); }
-        .sidebar { width: 280px; background: #8b0000; color: white; padding: 25px; display: flex; flex-direction: column; }
-        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; text-align: center; border-bottom: 2px solid #fcbf49; padding-bottom: 10px; }
-        .sidebar a { color: white; text-decoration: none; padding: 12px; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; display: block; }
-        .sidebar a:hover { background: rgba(255,255,255,0.2); }
+        .sidebar { width: 280px; background: var(--primary); color: white; padding: 25px; display: flex; flex-direction: column; }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .sidebar a, .sidebar button { color: white; text-decoration: none; padding: 12px; border-radius: 8px; margin-bottom: 10px; transition: 0.2s ease; display: block; background: transparent; border: 0; text-align: left; font-size: 1rem; cursor: pointer; }
+        .sidebar a:hover, .sidebar a:focus, .sidebar button:hover, .sidebar button:focus { background: rgba(255,255,255,0.2); outline: none; }
+        .sidebar-status { margin-top: auto; font-size: 0.8rem; opacity: 0.75; overflow-wrap: anywhere; }
         .main { flex: 1; padding: 40px; overflow-y: auto; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        h1 { color: #003049; margin-bottom: 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px; }
+        h1 { color: var(--secondary); margin-bottom: 20px; }
+        h2 { line-height: 1.25; }
         .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 1rem; outline: none; }
-        .btn-save { background: #003049; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; }
-        .btn-save:hover { background: #8b0000; }
-        .item-lista { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
-        .btn-actions { display: flex; gap: 10px; }
-        .btn-edit { background: #fcbf49; color: #003049; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-        .tag { font-size: 0.7rem; background: #eee; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; margin-right: 10px; }
-        .preview-img { max-height: 80px; display: block; margin-top: 10px; border-radius: 4px; }
+        label { display: block; margin-bottom: 5px; font-weight: 700; color: #555; }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 1rem; outline: none; background: #fff; }
+        textarea { min-height: 120px; resize: vertical; }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(252,191,73,0.25); }
+        button { transition: 0.2s ease; }
+        button:disabled { cursor: wait; opacity: 0.75; }
+        .btn-save { background: var(--secondary); color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; font-size: 1.1rem; }
+        .btn-save:hover, .btn-save:focus { background: var(--primary); outline: none; }
+        .item-lista { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .item-lista:last-child { border-bottom: none; }
+        .item-info { min-width: 0; }
+        .item-info strong { overflow-wrap: anywhere; }
+        .btn-actions { display: flex; gap: 10px; flex-shrink: 0; }
+        .btn-edit { background: var(--accent); color: var(--secondary); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 700; }
+        .btn-delete { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 700; }
+        .btn-edit:hover, .btn-delete:hover { filter: brightness(0.95); }
+        .tag { display: inline-block; font-size: 0.7rem; background: #eef2f7; color: var(--secondary); padding: 3px 8px; border-radius: 999px; text-transform: uppercase; margin-right: 10px; font-weight: 700; }
+        .preview-img { max-height: 90px; max-width: 160px; display: block; margin-top: 10px; border-radius: 4px; object-fit: cover; border: 1px solid var(--border); }
+        .status-msg { margin-top: 12px; min-height: 22px; font-weight: 700; color: var(--muted); }
+        .status-msg.sucesso { color: #16703a; }
+        .status-msg.erro { color: var(--danger); }
         footer { background-color: #111; color: #aaa; text-align: center; padding: 10px; font-size: 0.85rem; }
         footer strong { color: #fff; }
+        @media (max-width: 820px) {
+            .wrapper { flex-direction: column; }
+            .sidebar { width: 100%; padding: 18px 20px; }
+            .sidebar h2 { margin-bottom: 14px; }
+            .sidebar-status { margin-top: 8px; }
+            .main { padding: 24px 16px; }
+            .grid-form { grid-template-columns: 1fr; gap: 0; }
+            .item-lista { align-items: flex-start; flex-direction: column; }
+            .btn-actions, .btn-actions button { width: 100%; }
+        }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="sidebar">
-            <h2>GESTÃO UAI SÔ</h2>
-            <a href="index.html">⬅️ Ver Site Principal</a>
-            <p style="margin-top: auto; font-size: 0.8rem; opacity: 0.7;">Firebase Realtime Online</p>
+    <section id="login-view" class="login-shell">
+        <div class="login-card">
+            <h1>Área restrita</h1>
+            <p>Entre com o e-mail administrador cadastrado no Firebase.</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="login-email">E-mail</label>
+                    <input type="email" id="login-email" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-senha">Senha</label>
+                    <input type="password" id="login-senha" autocomplete="current-password" required>
+                </div>
+                <button type="submit" id="btn-login" class="btn-save">Entrar</button>
+                <p id="status-login" class="status-msg" aria-live="polite"></p>
+            </form>
+            <p style="margin-top: 16px; margin-bottom: 0;"><a href="index.html" style="color:#003049; font-weight:700; text-decoration:none;">Voltar para o site</a></p>
         </div>
-        <div class="main">
+    </section>
+
+    <div id="app-view" class="wrapper hidden">
+        <aside class="sidebar">
+            <h2>GESTÃO UAI SÓ</h2>
+            <a href="index.html">Voltar para o site principal</a>
+            <button type="button" id="btn-logout">Sair do painel</button>
+            <p class="sidebar-status">Conectado como <span id="usuario-logado"></span></p>
+        </aside>
+        <main class="main">
             <h1>Dashboard Administrável</h1>
-            
-            <div class="card">
-                <h2 id="form-titulo" style="margin-bottom: 20px; color: #8b0000;">➕ Novo Conteúdo ou Patrocinador</h2>
+            <section class="card">
+                <h2 id="form-titulo" style="margin-bottom: 20px; color: #8b0000;">Novo conteúdo ou patrocinador</h2>
                 <form id="formConteudo">
                     <input type="hidden" id="edit-id">
                     <input type="hidden" id="imagem-base64">
-                    
                     <div class="grid-form">
                         <div class="form-group">
-                            <label>Onde vai aparecer?</label>
+                            <label for="tipo">Onde vai aparecer?</label>
                             <select id="tipo" required>
                                 <option value="cidade">Sobre a Cidade (Texto Principal)</option>
                                 <option value="turismo">Turismo e Lazer</option>
@@ -60,120 +116,309 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Título / Nome da Empresa</label>
+                            <label for="titulo">Título / Nome da Empresa</label>
                             <input type="text" id="titulo" placeholder="Ex: Prefeitura ou Restaurante X" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Texto / Descrição (Para "Cidade", este será o texto principal)</label>
+                        <label for="descricao">Texto / Descrição</label>
                         <textarea id="descricao" placeholder="Escreva o conteúdo aqui..." required></textarea>
                     </div>
                     <div class="grid-form">
                         <div class="form-group">
-                            <label>Enviar Foto/Logo do Computador ou Celular</label>
+                            <label for="arquivo-imagem">Enviar foto ou logo</label>
                             <input type="file" id="arquivo-imagem" accept="image/*">
-                            <img id="preview" class="preview-img" style="display:none;">
+                            <img id="preview" class="preview-img" alt="Prévia da imagem" style="display:none;">
                         </div>
                         <div class="form-group">
-                            <label>Link de Vídeo do YouTube (Opcional)</label>
+                            <label for="video">Link de vídeo do YouTube (opcional)</label>
                             <input type="url" id="video" placeholder="https://youtube.com/...">
                         </div>
                     </div>
-                    <button type="submit" id="btn-submit" class="btn-save">Publicar Agora</button>
-                    <button type="button" id="btn-cancelar" class="btn-delete" style="display:none; margin-top:10px; width:100%;">Cancelar Edição</button>
+                    <button type="submit" id="btn-submit" class="btn-save">Publicar agora</button>
+                    <button type="button" id="btn-cancelar" class="btn-delete" style="display:none; margin-top:10px; width:100%;">Cancelar edição</button>
+                    <p id="status-form" class="status-msg" aria-live="polite"></p>
                 </form>
-            </div>
-
-            <div class="card">
-                <h2 style="margin-bottom: 20px; color: #003049;">📋 Gerenciar o que já existe</h2>
+            </section>
+            <section class="card">
+                <h2 style="margin-bottom: 20px; color: #003049;">Gerenciar o que já existe</h2>
                 <div id="listaItens"><p>Carregando...</p></div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 
     <footer>
-        <p>Painel Administrativo V2.5 &copy; 2026 | Desenvolvido por <strong>Adolfo Queiroz</strong></p>
+        <p>Painel Administrativo V2.7 &copy; 2026 | Desenvolvido por <strong>Adolfo Queiroz</strong></p>
     </footer>
 
     <script>
-        const API_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo";
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBP5OfkbnjGztiCGjlVyjGNEyz4Wms0Tsg",
+            authDomain: "uai-so-itapagipe.firebaseapp.com",
+            databaseURL: "https://uai-so-itapagipe-default-rtdb.firebaseio.com",
+            projectId: "uai-so-itapagipe",
+            storageBucket: "uai-so-itapagipe.firebasestorage.app",
+            messagingSenderId: "1063606360842",
+            appId: "1:1063606360842:web:dee0a0a5961797ef1cb8f3",
+            measurementId: "G-473FXMD3SK"
+        };
+        const API_URL = `${FIREBASE_CONFIG.databaseURL}/conteudo`;
+        const AUTH_KEY = 'uai-so-admin-auth';
         let cacheDados = {};
+        let authState = null;
+
+        const loginView = document.getElementById('login-view');
+        const appView = document.getElementById('app-view');
+        const loginForm = document.getElementById('loginForm');
+        const loginStatus = document.getElementById('status-login');
+        const btnLogin = document.getElementById('btn-login');
+        const form = document.getElementById('formConteudo');
+        const statusForm = document.getElementById('status-form');
+        const btnSubmit = document.getElementById('btn-submit');
+
+        function escapeHTML(valor) {
+            return String(valor || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+        }
+
+        function mostrarStatus(mensagem, tipo = '') {
+            statusForm.textContent = mensagem;
+            statusForm.className = `status-msg ${tipo}`.trim();
+        }
+
+        function mostrarLoginStatus(mensagem, tipo = '') {
+            loginStatus.textContent = mensagem;
+            loginStatus.className = `status-msg ${tipo}`.trim();
+        }
+
+        function setCarregando(ativo, texto = 'Processando...') {
+            btnSubmit.disabled = ativo;
+            btnSubmit.innerText = ativo ? texto : (document.getElementById('edit-id').value ? 'Salvar alterações' : 'Publicar agora');
+        }
+
+        function salvarSessao(dados) {
+            authState = {
+                idToken: dados.idToken,
+                refreshToken: dados.refreshToken,
+                email: dados.email || authState?.email || '',
+                expiresAt: Date.now() + (Number(dados.expiresIn || 3600) * 1000) - 60000
+            };
+            sessionStorage.setItem(AUTH_KEY, JSON.stringify(authState));
+        }
+
+        function carregarSessao() {
+            try {
+                authState = JSON.parse(sessionStorage.getItem(AUTH_KEY) || 'null');
+            } catch (erro) {
+                authState = null;
+            }
+            return authState;
+        }
+
+        function limparSessao() {
+            authState = null;
+            sessionStorage.removeItem(AUTH_KEY);
+        }
+
+        async function renovarToken() {
+            if (!authState?.refreshToken) return null;
+            const res = await fetch(`https://securetoken.googleapis.com/v1/token?key=${FIREBASE_CONFIG.apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: authState.refreshToken })
+            });
+            if (!res.ok) {
+                limparSessao();
+                return null;
+            }
+            const dados = await res.json();
+            salvarSessao({
+                idToken: dados.id_token,
+                refreshToken: dados.refresh_token,
+                expiresIn: dados.expires_in,
+                email: authState.email
+            });
+            return authState.idToken;
+        }
+
+        async function obterToken() {
+            if (!authState) carregarSessao();
+            if (!authState?.idToken) return null;
+            if (Date.now() < authState.expiresAt) return authState.idToken;
+            return renovarToken();
+        }
+
+        function urlBanco(caminho = '', token = null) {
+            const final = caminho ? `${API_URL}/${caminho}.json` : `${API_URL}.json`;
+            return token ? `${final}?auth=${encodeURIComponent(token)}` : final;
+        }
+
+        async function fetchAutenticado(caminho, opcoes = {}) {
+            const token = await obterToken();
+            if (!token) throw new Error('Sessão expirada');
+            return fetch(urlBanco(caminho, token), opcoes);
+        }
+
+        async function entrar(email, senha) {
+            const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_CONFIG.apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password: senha, returnSecureToken: true })
+            });
+            const dados = await res.json();
+            if (!res.ok) {
+                const codigo = dados?.error?.message || 'LOGIN_ERROR';
+                throw new Error(codigo);
+            }
+            salvarSessao(dados);
+        }
+
+        function traduzErroLogin(codigo) {
+            const erros = {
+                EMAIL_NOT_FOUND: 'E-mail administrador não encontrado.',
+                INVALID_PASSWORD: 'Senha incorreta.',
+                INVALID_LOGIN_CREDENTIALS: 'E-mail ou senha incorretos.',
+                USER_DISABLED: 'Este usuário foi desativado no Firebase.',
+                TOO_MANY_ATTEMPTS_TRY_LATER: 'Muitas tentativas. Aguarde um pouco e tente novamente.'
+            };
+            return erros[codigo] || 'Não foi possível entrar. Verifique o e-mail, a senha e se o login por e-mail/senha está ativado no Firebase.';
+        }
+
+        function mostrarApp() {
+            loginView.classList.add('hidden');
+            appView.classList.remove('hidden');
+            document.getElementById('usuario-logado').textContent = authState?.email || 'administrador';
+        }
+
+        function mostrarLogin() {
+            appView.classList.add('hidden');
+            loginView.classList.remove('hidden');
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            btnLogin.disabled = true;
+            btnLogin.innerText = 'Entrando...';
+            mostrarLoginStatus('Validando acesso...');
+            try {
+                await entrar(document.getElementById('login-email').value.trim(), document.getElementById('login-senha').value);
+                mostrarLoginStatus('Acesso liberado.', 'sucesso');
+                mostrarApp();
+                await carregarLista();
+            } catch (erro) {
+                console.error(erro);
+                mostrarLoginStatus(traduzErroLogin(erro.message), 'erro');
+            } finally {
+                btnLogin.disabled = false;
+                btnLogin.innerText = 'Entrar';
+            }
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            limparSessao();
+            resgatarFormulario();
+            mostrarLogin();
+        });
 
         document.getElementById('arquivo-imagem').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('imagem-base64').value = event.target.result;
-                    const preview = document.getElementById('preview');
-                    preview.src = event.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                mostrarStatus('Escolha um arquivo de imagem válido.', 'erro');
+                e.target.value = '';
+                return;
             }
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('imagem-base64').value = event.target.result;
+                const preview = document.getElementById('preview');
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
         });
 
-        document.getElementById('formConteudo').addEventListener('submit', async (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const idEditando = document.getElementById('edit-id').value;
-            const btn = document.getElementById('btn-submit');
-            btn.innerText = "Processando...";
+            setCarregando(true);
+            mostrarStatus('Salvando conteúdo...');
 
             const item = {
                 tipo: document.getElementById('tipo').value,
-                titulo: document.getElementById('titulo').value,
-                descricao: document.getElementById('descricao').value,
+                titulo: document.getElementById('titulo').value.trim(),
+                descricao: document.getElementById('descricao').value.trim(),
                 imagem: document.getElementById('imagem-base64').value,
-                video: document.getElementById('video').value,
+                video: document.getElementById('video').value.trim(),
                 data: Date.now()
             };
 
-            if (idEditando) {
-                await fetch(`${API_URL}/${idEditando}.json`, { method: 'PUT', body: JSON.stringify(item) });
-                alert("Item atualizado com sucesso!");
-            } else {
-                await fetch(`${API_URL}.json`, { method: 'POST', body: JSON.stringify(item) });
-                alert("Novo item publicado com sucesso!");
+            try {
+                const res = await fetchAutenticado(idEditando || '', { method: idEditando ? 'PUT' : 'POST', body: JSON.stringify(item) });
+                if (!res.ok) throw new Error('Falha ao salvar');
+                mostrarStatus(idEditando ? 'Item atualizado com sucesso.' : 'Novo item publicado com sucesso.', 'sucesso');
+                resgatarFormulario(false);
+                await carregarLista();
+            } catch (erro) {
+                console.error(erro);
+                mostrarStatus('Não foi possível salvar agora. Verifique seu login, a conexão e as regras do Firebase.', 'erro');
+            } finally {
+                setCarregando(false);
             }
-            resgatarFormulario();
-            location.reload();
         });
 
         async function carregarLista() {
-            const res = await fetch(`${API_URL}.json`);
-            const dados = await res.json();
-            cacheDados = dados || {};
             const container = document.getElementById('listaItens');
-            container.innerHTML = "";
-            if(!dados) { container.innerHTML = "<p>Nenhum item publicado encontrado.</p>"; return; }
-            
-            for (let id in dados) {
-                const item = dados[id];
-                container.innerHTML += `
-                    <div class="item-lista">
-                        <div>
-                            <span class="tag">${item.tipo}</span>
-                            <strong>${item.titulo}</strong>
-                        </div>
-                        <div class="btn-actions">
-                            <button class="btn-edit" onclick="prepararEdicao('${id}')">Editar</button>
-                            <button class="btn-delete" onclick="excluirItem('${id}')">Excluir</button>
-                        </div>
-                    </div>`;
+            container.innerHTML = '<p>Carregando...</p>';
+            try {
+                const token = await obterToken();
+                const res = await fetch(urlBanco('', token));
+                if (!res.ok) throw new Error('Falha ao carregar');
+                const dados = await res.json();
+                cacheDados = dados || {};
+                container.innerHTML = '';
+                if (!dados) {
+                    container.innerHTML = '<p>Nenhum item publicado encontrado.</p>';
+                    return;
+                }
+                Object.entries(dados)
+                    .sort((a, b) => (b[1].data || 0) - (a[1].data || 0))
+                    .forEach(([id, item]) => {
+                        const div = document.createElement('div');
+                        div.className = 'item-lista';
+                        div.innerHTML = `
+                            <div class="item-info">
+                                <span class="tag">${escapeHTML(item.tipo || 'sem tipo')}</span>
+                                <strong>${escapeHTML(item.titulo || 'Sem título')}</strong>
+                            </div>
+                            <div class="btn-actions">
+                                <button class="btn-edit" type="button" data-acao="editar" data-id="${escapeHTML(id)}">Editar</button>
+                                <button class="btn-delete" type="button" data-acao="excluir" data-id="${escapeHTML(id)}">Excluir</button>
+                            </div>`;
+                        container.appendChild(div);
+                    });
+            } catch (erro) {
+                console.error(erro);
+                container.innerHTML = '<p>Não foi possível carregar a lista. Verifique seu login e tente novamente.</p>';
             }
         }
 
+        document.getElementById('listaItens').addEventListener('click', (event) => {
+            const botao = event.target.closest('button[data-acao]');
+            if (!botao) return;
+            const id = botao.dataset.id;
+            if (botao.dataset.acao === 'editar') prepararEdicao(id);
+            if (botao.dataset.acao === 'excluir') excluirItem(id);
+        });
+
         function prepararEdicao(id) {
             const item = cacheDados[id];
-            if(!item) return;
-
+            if (!item) return;
             document.getElementById('edit-id').value = id;
-            document.getElementById('tipo').value = item.tipo;
-            document.getElementById('titulo').value = item.titulo;
-            document.getElementById('descricao').value = item.descricao;
-            document.getElementById('imagem-base64').value = item.imagem || "";
-            document.getElementById('video').value = item.video || "";
-
+            document.getElementById('tipo').value = item.tipo || 'turismo';
+            document.getElementById('titulo').value = item.titulo || '';
+            document.getElementById('descricao').value = item.descricao || '';
+            document.getElementById('imagem-base64').value = item.imagem || '';
+            document.getElementById('video').value = item.video || '';
             const preview = document.getElementById('preview');
             if (item.imagem) {
                 preview.src = item.imagem;
@@ -181,32 +426,56 @@
             } else {
                 preview.style.display = 'none';
             }
-
-            document.getElementById('form-titulo').innerText = "📝 Editando Conteúdo";
-            document.getElementById('btn-submit').innerText = "Salvar Alterações";
+            document.getElementById('form-titulo').innerText = 'Editando conteúdo';
+            btnSubmit.innerText = 'Salvar alterações';
             document.getElementById('btn-cancelar').style.display = 'block';
+            mostrarStatus('');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function resgatarFormulario() {
-            document.getElementById('formConteudo').reset();
-            document.getElementById('edit-id').value = "";
-            document.getElementById('imagem-base64').value = "";
+        function resgatarFormulario(limparStatus = true) {
+            form.reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('imagem-base64').value = '';
             document.getElementById('preview').style.display = 'none';
-            document.getElementById('form-titulo').innerText = "➕ Novo Conteúdo ou Patrocinador";
-            document.getElementById('btn-submit').innerText = "Publicar Agora";
+            document.getElementById('form-titulo').innerText = 'Novo conteúdo ou patrocinador';
+            btnSubmit.innerText = 'Publicar agora';
             document.getElementById('btn-cancelar').style.display = 'none';
+            if (limparStatus) mostrarStatus('');
         }
 
-        document.getElementById('btn-cancelar').addEventListener('click', resgatarFormulario);
+        document.getElementById('btn-cancelar').addEventListener('click', () => resgatarFormulario());
 
         async function excluirItem(id) {
-            if(confirm("Tem certeza que deseja apagar permanentemente esse item do site?")) {
-                await fetch(`${API_URL}/${id}.json`, { method: 'DELETE' });
-                location.reload();
+            if (!confirm('Tem certeza que deseja apagar permanentemente esse item do site?')) return;
+            mostrarStatus('Excluindo item...');
+            try {
+                const res = await fetchAutenticado(id, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Falha ao excluir');
+                mostrarStatus('Item excluído com sucesso.', 'sucesso');
+                await carregarLista();
+            } catch (erro) {
+                console.error(erro);
+                mostrarStatus('Não foi possível excluir agora. Verifique seu login e tente novamente.', 'erro');
             }
         }
-        carregarLista();
+
+        async function iniciar() {
+            carregarSessao();
+            if (!authState?.idToken) {
+                mostrarLogin();
+                return;
+            }
+            const token = await obterToken();
+            if (!token) {
+                mostrarLogin();
+                return;
+            }
+            mostrarApp();
+            await carregarLista();
+        }
+
+        iniciar();
     </script>
 </body>
 </html>

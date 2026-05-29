@@ -1,79 +1,175 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uai Sô Itapagipe!</title>
+    <title>Uai Só Itapagipe!</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f9f6f0; color: #333; line-height: 1.6; }
-        header { background: linear-gradient(rgba(139, 0, 0, 0.85), rgba(139, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover; color: #fff; text-align: center; padding: 60px 20px; }
-        nav { background-color: #d62828; position: sticky; top: 0; z-index: 1000; text-align: center; }
-        nav a { display: inline-block; color: white; padding: 14px 20px; text-decoration: none; font-weight: bold; }
-        nav a:hover { background-color: #fcbf49; color: #003049; }
+        :root {
+            --primary: #8b0000;
+            --secondary: #003049;
+            --accent: #fcbf49;
+            --danger: #d62828;
+            --paper: #fffaf3;
+            --text: #333;
+            --muted: #667085;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: #f9f6f0; color: var(--text); line-height: 1.6; }
+        header { background: linear-gradient(rgba(139, 0, 0, 0.86), rgba(139, 0, 0, 0.86)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover; color: #fff; text-align: center; padding: 64px 20px; }
+        header h1 { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.1; }
+        header p { margin-top: 10px; font-size: 1.15rem; }
+        nav { background-color: var(--danger); position: sticky; top: 0; z-index: 1000; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+        nav a { display: inline-block; color: white; padding: 14px 16px; text-decoration: none; font-weight: 700; }
+        nav a:hover, nav a:focus { background-color: var(--accent); color: var(--secondary); outline: none; }
+        .admin-link { color: #777; font-size: 0.75rem; font-weight: 400; opacity: 0.65; }
+        .admin-link:hover, .admin-link:focus { color: var(--accent); opacity: 1; outline: none; }
         .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
         section { background: white; padding: 30px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { color: #8b0000; border-bottom: 3px solid #fcbf49; padding-bottom: 5px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: #fdfaf6; border: 1px solid #eee; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
-        .card-content { padding: 15px; }
-        .card-img { width: 100%; height: 180px; object-fit: cover; }
-        .patrocinios { background: #003049; color: white; padding: 40px 20px; margin-top: 40px; text-align: center; }
-        footer { background-color: #111; color: #ccc; text-align: center; padding: 25px 20px; font-size: 0.9rem; border-top: 3px solid #d62828; }
-        footer a { color: #fcbf49; text-decoration: none; font-weight: bold; }
+        h2 { color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 5px; margin-bottom: 20px; line-height: 1.25; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+        .card { background: var(--paper); border: 1px solid #eee; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-height: 100%; }
+        .card-content { padding: 16px; }
+        .card-content h3 { color: var(--secondary); margin-bottom: 8px; line-height: 1.25; overflow-wrap: anywhere; }
+        .card-content p { overflow-wrap: anywhere; }
+        .card-img, .video-frame { width: 100%; height: 180px; object-fit: cover; border: none; background: #eee; }
+        .empty { color: var(--muted); font-style: italic; }
+        .patrocinios { background: var(--secondary); color: white; padding: 40px 20px; margin-top: 40px; text-align: center; }
+        .patrocinios .grid { max-width: 1100px; margin: 0 auto; }
+        .patrocinios .card { color: var(--text); text-align: left; }
+        footer { background-color: #111; color: #ccc; text-align: center; padding: 25px 20px; font-size: 0.9rem; border-top: 3px solid var(--danger); }
+        footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        @media (max-width: 760px) {
+            header { padding: 48px 16px; }
+            nav { position: static; padding: 6px; }
+            nav a { display: block; padding: 11px 12px; border-radius: 4px; }
+            .container { padding: 0 14px; }
+            section { padding: 22px 18px; }
+            .grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <header><h1>Uai Sô Itapagipe!</h1><p>O Portal da nossa terra!</p></header>
+    <header>
+        <h1>Uai Só Itapagipe!</h1>
+        <p>O portal da nossa terra!</p>
+    </header>
     <nav>
-        <a href="#sobre">A Cidade</a><a href="#turismo">Turismo</a><a href="#eventos">Entretenimento</a><a href="#patrocinadores">Patrocinadores</a>
-        <a href="#" onclick="acessarSuporte(event)" style="background:#000; color:#fcbf49; border-radius:4px; margin-left:10px;">🔒 Dashboard</a>
+        <a href="#sobre">A Cidade</a>
+        <a href="#turismo">Turismo</a>
+        <a href="#eventos">Entretenimento</a>
+        <a href="#gastronomia">Onde Comer</a>
+        <a href="#patrocinadores">Patrocinadores</a>
     </nav>
     <div class="container">
         <section id="sobre">
             <h2 id="cidade-titulo">Sobre Itapagipe - MG</h2>
             <p id="cidade-texto">Carregando história da cidade...</p>
         </section>
-        <section id="turismo"><h2>Turismo e Lazer</h2><div class="grid" id="grid-turismo"></div></section>
-        <section id="eventos"><h2>Entretenimento</h2><div class="grid" id="grid-eventos"></div></section>
+        <section id="turismo">
+            <h2>Turismo e Lazer</h2>
+            <div class="grid" id="grid-turismo"><p class="empty">Carregando...</p></div>
+        </section>
+        <section id="eventos">
+            <h2>Entretenimento</h2>
+            <div class="grid" id="grid-eventos"><p class="empty">Carregando...</p></div>
+        </section>
+        <section id="gastronomia">
+            <h2>Onde Comer</h2>
+            <div class="grid" id="grid-gastronomia"><p class="empty">Carregando...</p></div>
+        </section>
     </div>
     <div class="patrocinios" id="patrocinadores">
         <h2 style="color:#fcbf49; border-bottom:none; margin-bottom: 20px;">Nossos Patrocinadores e Parceiros</h2>
-        <div class="grid" id="grid-patrocinios"></div>
+        <div class="grid" id="grid-patrocinios"><p class="empty">Carregando...</p></div>
     </div>
-    
     <footer>
-        <p>&copy; 2026 Uai Sô Itapagipe - Guia de Turismo e Entretenimento Local.</p>
-        <p style="margin-top: 8px; font-size: 0.8rem; opacity: 0.8;">Desenvolvido com ❤️ por <a href="#">Adolfo Queiroz</a></p>
+        <p>&copy; 2026 Uai Só Itapagipe - Guia de Turismo e Entretenimento Local.</p>
+        <p style="margin-top: 8px; font-size: 0.8rem; opacity: 0.8;">Desenvolvido por <a href="#">Adolfo Queiroz</a></p>
+        <p style="margin-top: 10px;"><a href="dashboard.html" class="admin-link">Área restrita</a></p>
     </footer>
-
     <script>
         const FIREBASE_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com/conteudo.json";
-        function acessarSuporte(event) { event.preventDefault(); if(prompt("Senha:")==="admin123") location.href="dashboard.html"; }
-        function getYT(url) { const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : null; }
+
+
+        function getYT(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function escapeHTML(valor) {
+            return String(valor || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+        }
+
+        function cardMidia(item) {
+            const videoId = getYT(item.video || '');
+            if (videoId) return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (item.imagem) return `<img src="${item.imagem}" class="card-img" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}">`;
+            return '';
+        }
+
+        function montarCard(item) {
+            return `<article class="card">${cardMidia(item)}<div class="card-content"><h3>${escapeHTML(item.titulo || 'Sem título')}</h3><p>${escapeHTML(item.descricao || '')}</p></div></article>`;
+        }
+
+        function preencherGrid(id, html, vazio) {
+            document.getElementById(id).innerHTML = html || `<p class="empty">${vazio}</p>`;
+        }
+
         async function carregar() {
             try {
                 const res = await fetch(FIREBASE_URL);
+                if (!res.ok) throw new Error('Falha ao carregar dados');
                 const dados = await res.json();
-                if(!dados) return;
-                const grids = { turismo: "", eventos: "", patrocinadores: "" };
-                let ultimaCidade = null;
-                for(let id in dados) {
-                    const item = dados[id];
-                    if(item.tipo === 'cidade') { ultimaCidade = item; continue; }
-                    const midia = item.video ? `<iframe style="width:100%; height:180px; border:none;" src="https://www.youtube.com/embed/${getYT(item.video)}"></iframe>` : (item.imagem ? `<img src="${item.imagem}" class="card-img">` : "");
-                    const html = `<div class="card">${midia}<div class="card-content"><h3>${item.titulo}</h3><p>${item.descricao}</p></div></div>`;
-                    if(item.tipo === 'patrocinadores') grids.patrocinadores += html;
-                    else if(item.tipo === 'eventos') grids.eventos += html;
-                    else grids.turismo += html;
+                if (!dados) {
+                    preencherGrid('grid-turismo', '', 'Nenhum passeio cadastrado ainda.');
+                    preencherGrid('grid-eventos', '', 'Nenhum evento cadastrado ainda.');
+                    preencherGrid('grid-gastronomia', '', 'Nenhum local cadastrado ainda.');
+                    preencherGrid('grid-patrocinios', '', 'Nenhum patrocinador cadastrado ainda.');
+                    return;
                 }
-                if(ultimaCidade) { document.getElementById('cidade-titulo').innerText = ultimaCidade.titulo; document.getElementById('cidade-texto').innerText = ultimaCidade.descricao; }
-                document.getElementById('grid-turismo').innerHTML = grids.turismo;
-                document.getElementById('grid-eventos').innerHTML = grids.eventos;
-                document.getElementById('grid-patrocinios').innerHTML = grids.patrocinadores;
-            } catch (e) { console.error(e); }
+
+                const grids = { turismo: '', eventos: '', gastronomia: '', patrocinadores: '' };
+                let ultimaCidade = null;
+                Object.values(dados)
+                    .sort((a, b) => (b.data || 0) - (a.data || 0))
+                    .forEach((item) => {
+                        if (item.tipo === 'cidade') {
+                            ultimaCidade = item;
+                            return;
+                        }
+                        const html = montarCard(item);
+                        if (item.tipo === 'patrocinadores') grids.patrocinadores += html;
+                        else if (item.tipo === 'eventos') grids.eventos += html;
+                        else if (item.tipo === 'gastronomia') grids.gastronomia += html;
+                        else grids.turismo += html;
+                    });
+
+                if (ultimaCidade) {
+                    document.getElementById('cidade-titulo').innerText = ultimaCidade.titulo || 'Sobre Itapagipe - MG';
+                    document.getElementById('cidade-texto').innerText = ultimaCidade.descricao || '';
+                }
+                preencherGrid('grid-turismo', grids.turismo, 'Nenhum passeio cadastrado ainda.');
+                preencherGrid('grid-eventos', grids.eventos, 'Nenhum evento cadastrado ainda.');
+                preencherGrid('grid-gastronomia', grids.gastronomia, 'Nenhum local cadastrado ainda.');
+                preencherGrid('grid-patrocinios', grids.patrocinadores, 'Nenhum patrocinador cadastrado ainda.');
+            } catch (e) {
+                console.error(e);
+                document.getElementById('cidade-texto').innerText = 'Não foi possível carregar as informações agora. Tente novamente em instantes.';
+                preencherGrid('grid-turismo', '', 'Conteúdo indisponível no momento.');
+                preencherGrid('grid-eventos', '', 'Conteúdo indisponível no momento.');
+                preencherGrid('grid-gastronomia', '', 'Conteúdo indisponível no momento.');
+                preencherGrid('grid-patrocinios', '', 'Conteúdo indisponível no momento.');
+            }
         }
+
         carregar();
     </script>
 </body>
 </html>
+
+
+
+
