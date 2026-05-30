@@ -206,10 +206,13 @@
             try {
                 const jaContou = sessionStorage.getItem('uai-so-acesso-contado') === 'sim';
                 if (jaContou) return;
+                const resAtual = await fetch(ACESSOS_URL);
+                if (!resAtual.ok) throw new Error('Falha ao ler acessos');
+                const totalAtual = Number(await resAtual.json()) || 0;
                 const resSalvar = await fetch(ACESSOS_URL, {
-                    method: 'POST',
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data: Date.now() })
+                    body: JSON.stringify(totalAtual + 1)
                 });
                 if (!resSalvar.ok) throw new Error('Falha ao salvar acesso');
                 sessionStorage.setItem('uai-so-acesso-contado', 'sim');
