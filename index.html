@@ -1,215 +1,299 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uai Sô Itapagipe - Turismo e Entretenimento</title>
+    <title>Uai Sô, Itapagipe!</title>
     <style>
-        /* Estilos Gerais */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #9d1d20;
+            --secondary: #064663;
+            --accent: #ffb703;
+            --sun: #fb8500;
+            --leaf: #2a9d8f;
+            --sky: #e0f4ff;
+            --danger: #d62828;
+            --paper: #fffaf3;
+            --text: #2d2d2d;
+            --muted: #667085;
         }
-
-        body {
-            background-color: #f9f6f0;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        /* Cabeçalho */
-        header {
-            background: linear-gradient(rgba(139, 0, 0, 0.85), rgba(139, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
-            color: #fff;
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        header p {
-            font-size: 1.2rem;
-            font-style: italic;
-        }
-
-        /* Navegação */
-        nav {
-            background-color: #d62828;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            text-align: center;
-        }
-
-        nav a {
-            display: inline-block;
-            color: white;
-            padding: 14px 20px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        nav a:hover {
-            background-color: #fcbf49;
-            color: #003049;
-        }
-
-        /* Conteúdo Principal */
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        section {
-            background: white;
-            padding: 30px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        h2 {
-            color: #8b0000;
-            border-bottom: 3px solid #fcbf49;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
-
-        /* Grid de Atrações */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: #fdfaf6;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-content {
-            padding: 15px;
-        }
-
-        .card-content h3 {
-            color: #d62828;
-            margin-bottom: 10px;
-        }
-
-        /* Rodapé */
-        footer {
-            background-color: #003049;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            font-size: 0.9rem;
-        }
-
-        /* Responsividade */
-        @media (max-width: 600px) {
-            header h1 { font-size: 2rem; }
-            nav a { padding: 10px 12px; font-size: 0.9rem; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: linear-gradient(180deg, #fff7e8 0%, #f1fbff 42%, #fffaf3 100%); color: var(--text); line-height: 1.6; }
+        header { position: relative; overflow: hidden; background: linear-gradient(115deg, rgba(157, 29, 32, 0.62), rgba(251, 133, 0, 0.38)), url('dsc2262.jpg') no-repeat center center/cover; color: #fff; text-align: center; padding: 82px 20px 96px; }
+        header::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 48px; background: linear-gradient(135deg, transparent 33%, #fff7e8 34%), linear-gradient(225deg, transparent 33%, #fff7e8 34%); background-size: 56px 48px; background-position: 0 0, 28px 0; }
+        .hero-content { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
+        .hero-badge { display: inline-block; margin-bottom: 16px; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.45); font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; font-size: 0.78rem; }
+        header h1 { font-size: clamp(2.35rem, 7vw, 4.6rem); line-height: 1.05; text-shadow: 0 4px 18px rgba(0,0,0,0.25); }
+        header p { margin: 14px auto 0; font-size: clamp(1.05rem, 2.5vw, 1.35rem); max-width: 620px; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 26px; }
+        .hero-actions a { color: var(--secondary); background: var(--accent); text-decoration: none; font-weight: 800; padding: 12px 18px; border-radius: 999px; box-shadow: 0 8px 18px rgba(0,0,0,0.22); }
+        .hero-actions a.secondary { color: #fff; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.5); }
+        nav { background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.08); padding: 8px; }
+        nav a { display: inline-block; color: var(--secondary); padding: 10px 14px; margin: 3px; border-radius: 999px; text-decoration: none; font-weight: 800; }
+        nav a:hover, nav a:focus { background-color: var(--accent); color: var(--secondary); outline: none; transform: translateY(-1px); }
+        .admin-link { color: #777; font-size: 0.75rem; font-weight: 400; opacity: 0.65; }
+        .admin-link:hover, .admin-link:focus { color: var(--accent); opacity: 1; outline: none; }
+        .info-strip { max-width: 1120px; margin: 18px auto 0; padding: 0 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+        .info-pill { background: rgba(255,255,255,0.88); border: 1px solid rgba(6,70,99,0.1); border-left: 5px solid var(--leaf); border-radius: 8px; box-shadow: 0 8px 22px rgba(0,48,73,0.07); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 74px; }
+        .info-label { color: var(--muted); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+        .info-value { color: var(--secondary); font-size: clamp(1.15rem, 3vw, 1.65rem); line-height: 1.1; font-weight: 900; margin-top: 3px; }
+        .info-detail { color: var(--muted); font-size: 0.86rem; margin-top: 2px; }
+        .info-icon { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; color: var(--secondary); background: var(--sky); font-weight: 900; flex: 0 0 auto; }
+        .container { max-width: 1120px; margin: 24px auto; padding: 0 20px; }
+        section { background: rgba(255,255,255,0.92); padding: 30px; margin-bottom: 22px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,48,73,0.08); border: 1px solid rgba(6,70,99,0.08); }
+        h2 { color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 7px; margin-bottom: 20px; line-height: 1.25; }
+        .section-kicker { color: var(--leaf); font-weight: 800; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.04em; margin-bottom: 4px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+        .card { background: var(--paper); border: 1px solid #ffe2a8; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-height: 100%; box-shadow: 0 8px 22px rgba(0,0,0,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(0,48,73,0.12); }
+        .card-content { padding: 16px; }
+        .card-content h3 { color: var(--secondary); margin-bottom: 8px; line-height: 1.25; overflow-wrap: anywhere; }
+        .card-content p { overflow-wrap: anywhere; }
+        .card-img, .video-frame, .local-video { width: 100%; height: 190px; object-fit: cover; border: none; background: #111; }
+        .empty { color: var(--muted); font-style: italic; }
+        .patrocinios { background: linear-gradient(135deg, var(--secondary), #0a7c86); color: white; padding: 46px 20px; margin-top: 40px; text-align: center; }
+        .patrocinios .grid { max-width: 1100px; margin: 0 auto; }
+        .patrocinios .card { color: var(--text); text-align: left; }
+        footer { background-color: #111; color: #ccc; text-align: center; padding: 25px 20px; font-size: 0.9rem; border-top: 3px solid var(--danger); }
+        footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        @media (max-width: 760px) {
+            header { padding: 48px 16px; }
+            nav { position: static; padding: 8px; }
+            nav a { display: block; padding: 11px 12px; border-radius: 999px; }
+            .info-strip { grid-template-columns: 1fr; padding: 0 14px; }
+            .container { padding: 0 14px; }
+            section { padding: 22px 18px; }
+            .grid { grid-template-columns: 1fr; }
+            .hero-actions a { width: 100%; max-width: 280px; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Cabeçalho -->
     <header>
-        <h1>Uai Sô Itapagipe!</h1>
-        <p>Descubra as belezas, o aconchego e a energia do Triângulo Mineiro</p>
+        <div class="hero-content">
+            <span class="hero-badge">Turismo, cultura e bons encontros</span>
+            <h1>Uai Sô, Itapagipe!</h1>
+            <p>O portal da nossa terra, com passeios, sabores, eventos e histórias para aproveitar melhor a cidade.</p>
+            <div class="hero-actions">
+                <a href="#turismo">Explorar passeios</a>
+                <a href="#eventos" class="secondary">Ver entretenimento</a>
+            </div>
+        </div>
     </header>
-
-    <!-- Menu de Navegação -->
     <nav>
         <a href="#sobre">A Cidade</a>
         <a href="#turismo">Turismo</a>
         <a href="#eventos">Entretenimento</a>
-        <a href="#contato">Contato</a>
+        <a href="#gastronomia">Onde Comer</a>
+        <a href="#patrocinadores">Patrocinadores</a>
     </nav>
-
-    <!-- Conteúdo -->
-    <div class="container">
-
-        <!-- Seção Sobre -->
-        <section id="sobre">
-            <h2>Sobre Itapagipe - MG</h2>
-            <p>Localizada no próspero Triângulo Mineiro, Itapagipe é uma cidade acolhedora, famosa por seu povo hospitaleiro, suas ricas tradições sertanejas e as belas paisagens naturais formadas pela proximidade com o Rio Grande. Aqui, a tranquilidade do interior se mistura com a energia de grandes festas!</p>
-        </section>
-
-        <!-- Seção Turismo -->
-        <section id="turismo">
-            <h2>Turismo e Lazer</h2>
-            <div class="grid">
-                <div class="card">
-                    <div class="card-content">
-                        <h3>Rio Grande e Ranchos</h3>
-                        <p>Perfeito para quem busca descanso, pesca esportiva e esportes náuticos. Os ranchos na beira do rio são o refúgio ideal para os finais de semana em família.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-content">
-                        <h3>Praças e Convivência</h3>
-                        <p>As praças da cidade são o ponto de encontro de todas as gerações. Lugar ideal para tomar um sorvete, bater um papo furado e curtir o final de tarde.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-content">
-                        <h3>Culinária Mineira</h3>
-                        <p>Visitar Itapagipe e não provar do legítimo queijo mineiro, do pão de queijo quentinho ou daquela comidinha caseira feita no fogão a lenha é um pecado!</p>
-                    </div>
-                </div>
+    <div class="info-strip" aria-label="Informações rápidas">
+        <div class="info-pill clima">
+            <div>
+                <p class="info-label">Clima em Itapagipe</p>
+                <p class="info-value" id="clima-temp">Carregando...</p>
+                <p class="info-detail" id="clima-desc">Atualizando previsão</p>
             </div>
-        </section>
-
-        <!-- Seção Eventos -->
-        <section id="eventos">
-            <h2>Entretenimento e Cultura</h2>
-            <div class="grid">
-                <div class="card">
-                    <div class="card-content">
-                        <h3>Festa do Peão (EXPOITA)</h3>
-                        <p>O evento mais aguardado do ano! Atrai milhares de visitantes com grandes shows de artistas nacionais, montarias profissionais em touros e cavalos, e muita tradição sertaneja.</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-content">
-                        <h3>Festas Juninas e Cavalgadas</h3>
-                        <p>A cultura raiz se mantém viva através das tradicionais cavalgadas que reúnem comitivas de toda a região, além dos animados arraiás comunitários.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção Contato/Sugestões -->
-        <section id="contato">
-            <h2>Divulgue seu Evento ou Comércio</h2>
-            <p>Tem um rancho para alugar, um restaurante ou quer divulgar um evento em Itapagipe? Entre em contato conosco para adicionarmos à página!</p>
-            <p style="margin-top: 15px; font-weight: bold; color: #d62828;">📧 email@seuportalitapagipe.com</p>
-        </section>
-
+            <span class="info-icon" id="clima-icon">Sol</span>
+        </div>
     </div>
-
-    <!-- Rodapé -->
+    <div class="container">
+        <section id="sobre">
+            <p class="section-kicker">Conheça a cidade</p>
+            <h2 id="cidade-titulo">Sobre Itapagipe - MG</h2>
+            <p id="cidade-texto">Carregando história da cidade...</p>
+        </section>
+        <section id="turismo">
+            <p class="section-kicker">Para visitar</p>
+            <h2>Turismo e Lazer</h2>
+            <div class="grid" id="grid-turismo"><p class="empty">Carregando...</p></div>
+        </section>
+        <section id="eventos">
+            <p class="section-kicker">Agenda e diversão</p>
+            <h2>Entretenimento</h2>
+            <div class="grid" id="grid-eventos"><p class="empty">Carregando...</p></div>
+        </section>
+        <section id="gastronomia">
+            <p class="section-kicker">Sabores locais</p>
+            <h2>Onde Comer</h2>
+            <div class="grid" id="grid-gastronomia"><p class="empty">Carregando...</p></div>
+        </section>
+    </div>
+    <div class="patrocinios" id="patrocinadores">
+        <h2 style="color:#fcbf49; border-bottom:none; margin-bottom: 20px;">Nossos Patrocinadores e Parceiros</h2>
+        <div class="grid" id="grid-patrocinios"><p class="empty">Carregando...</p></div>
+    </div>
     <footer>
-        <p>&copy; 2026 Uai Sô Itapagipe - Guia de Turismo e Entretenimento Local.</p>
+        <p>&copy; 2026 Uai Sô, Itapagipe - Guia de Turismo e Entretenimento Local.</p>
+        <p style="margin-top: 8px; font-size: 0.8rem; opacity: 0.8;">Desenvolvido por <a href="#">Conexão Digital Informatica</a></p>
+        <p style="margin-top: 10px;"><a href="dashboard.html" class="admin-link">Área restrita</a></p>
     </footer>
+    <script>
+        const FIREBASE_BASE_URL = "https://uai-so-itapagipe-default-rtdb.firebaseio.com";
+        const FIREBASE_URL = `${FIREBASE_BASE_URL}/conteudo.json`;
+        const ACESSOS_URL = `${FIREBASE_BASE_URL}/metricas/acessos.json`;
+        const CLIMA_URL = "https://api.open-meteo.com/v1/forecast?latitude=-19.9066&longitude=-49.3786&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=America%2FSao_Paulo";
 
+
+        function getYT(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function getTikTok(url) {
+            if (!url || !/tiktok\.com/i.test(url)) return null;
+            const match = url.match(/\/video\/(\d+)/);
+            return match ? match[1] : null;
+        }
+
+        function getInstagramEmbed(url) {
+            if (!url || !/instagram\.com/i.test(url)) return null;
+            const match = url.match(/instagram\.com\/(p|reel|tv)\/([^/?#]+)/i);
+            return match ? `https://www.instagram.com/${match[1]}/${match[2]}/embed` : null;
+        }
+
+        function getFacebookEmbed(url) {
+            if (!url || !/(facebook\.com|fb\.watch)/i.test(url)) return null;
+            return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=560`;
+        }
+
+        function escapeHTML(valor) {
+            return String(valor || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+        }
+
+        function descricaoClima(codigo) {
+            const mapa = {
+                0: ['Céu limpo', 'Sol'],
+                1: ['Principalmente limpo', 'Sol'],
+                2: ['Parcialmente nublado', 'Sol'],
+                3: ['Nublado', 'Nuv'],
+                45: ['Neblina', 'Neb'],
+                48: ['Neblina com geada', 'Neb'],
+                51: ['Garoa leve', 'Chu'],
+                53: ['Garoa moderada', 'Chu'],
+                55: ['Garoa forte', 'Chu'],
+                61: ['Chuva fraca', 'Chu'],
+                63: ['Chuva moderada', 'Chu'],
+                65: ['Chuva forte', 'Chu'],
+                80: ['Pancadas leves', 'Chu'],
+                81: ['Pancadas moderadas', 'Chu'],
+                82: ['Pancadas fortes', 'Chu'],
+                95: ['Trovoadas', 'Tro']
+            };
+            return mapa[codigo] || ['Tempo atualizado', 'Cli'];
+        }
+
+        async function carregarClima() {
+            try {
+                const res = await fetch(CLIMA_URL);
+                if (!res.ok) throw new Error('Falha ao carregar clima');
+                const dados = await res.json();
+                const atual = dados.current;
+                const [descricao, icone] = descricaoClima(atual.weather_code);
+                document.getElementById('clima-temp').innerText = `${Math.round(atual.temperature_2m)}°C`;
+                document.getElementById('clima-desc').innerText = `${descricao} | Umidade ${atual.relative_humidity_2m}% | Vento ${Math.round(atual.wind_speed_10m)} km/h`;
+                document.getElementById('clima-icon').innerText = icone;
+            } catch (erro) {
+                console.error(erro);
+                document.getElementById('clima-temp').innerText = 'Indisponível';
+                document.getElementById('clima-desc').innerText = 'Não foi possível atualizar o clima agora.';
+            }
+        }
+
+        async function registrarAcesso() {
+            try {
+                const jaContou = sessionStorage.getItem('uai-so-acesso-contado') === 'sim';
+                if (jaContou) return;
+                const resSalvar = await fetch(ACESSOS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: Date.now() })
+                });
+                if (!resSalvar.ok) throw new Error('Falha ao salvar acesso');
+                sessionStorage.setItem('uai-so-acesso-contado', 'sim');
+            } catch (erro) {
+                console.error(erro);
+            }
+        }
+
+        function cardMidia(item) {
+            const videoId = getYT(item.video || '');
+            const tiktokId = getTikTok(item.video || '');
+            const instagramEmbed = getInstagramEmbed(item.video || '');
+            const facebookEmbed = getFacebookEmbed(item.video || '');
+            if (item.videoLocal) return `<video class="local-video" src="${escapeHTML(item.videoLocal)}" controls preload="metadata" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}"></video>`;
+            if (videoId) return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (tiktokId) return `<iframe class="video-frame" src="https://www.tiktok.com/embed/v2/${tiktokId}" title="TikTok de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (instagramEmbed) return `<iframe class="video-frame" src="${escapeHTML(instagramEmbed)}" title="Instagram de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (facebookEmbed) return `<iframe class="video-frame" src="${escapeHTML(facebookEmbed)}" title="Facebook de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (item.imagem) return `<img src="${escapeHTML(item.imagem)}" class="card-img" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}">`;
+            return '';
+        }
+
+        function montarCard(item) {
+            return `<article class="card">${cardMidia(item)}<div class="card-content"><h3>${escapeHTML(item.titulo || 'Sem título')}</h3><p>${escapeHTML(item.descricao || '')}</p></div></article>`;
+        }
+
+        function preencherGrid(id, html, vazio) {
+            document.getElementById(id).innerHTML = html || `<p class="empty">${vazio}</p>`;
+        }
+
+        async function carregar() {
+            try {
+                const res = await fetch(FIREBASE_URL);
+                if (!res.ok) throw new Error('Falha ao carregar dados');
+                const dados = await res.json();
+                if (!dados) {
+                    preencherGrid('grid-turismo', '', 'Nenhum passeio cadastrado ainda.');
+                    preencherGrid('grid-eventos', '', 'Nenhum evento cadastrado ainda.');
+                    preencherGrid('grid-gastronomia', '', 'Nenhum local cadastrado ainda.');
+                    preencherGrid('grid-patrocinios', '', 'Nenhum patrocinador cadastrado ainda.');
+                    return;
+                }
+
+                const grids = { turismo: '', eventos: '', gastronomia: '', patrocinadores: '' };
+                let ultimaCidade = null;
+                Object.values(dados)
+                    .sort((a, b) => (b.data || 0) - (a.data || 0))
+                    .forEach((item) => {
+                        if (item.tipo === 'cidade') {
+                            ultimaCidade = item;
+                            return;
+                        }
+                        const html = montarCard(item);
+                        if (item.tipo === 'patrocinadores') grids.patrocinadores += html;
+                        else if (item.tipo === 'eventos') grids.eventos += html;
+                        else if (item.tipo === 'gastronomia') grids.gastronomia += html;
+                        else grids.turismo += html;
+                    });
+
+                if (ultimaCidade) {
+                    document.getElementById('cidade-titulo').innerText = ultimaCidade.titulo || 'Sobre Itapagipe - MG';
+                    document.getElementById('cidade-texto').innerText = ultimaCidade.descricao || '';
+                }
+                preencherGrid('grid-turismo', grids.turismo, 'Nenhum passeio cadastrado ainda.');
+                preencherGrid('grid-eventos', grids.eventos, 'Nenhum evento cadastrado ainda.');
+                preencherGrid('grid-gastronomia', grids.gastronomia, 'Nenhum local cadastrado ainda.');
+                preencherGrid('grid-patrocinios', grids.patrocinadores, 'Nenhum patrocinador cadastrado ainda.');
+            } catch (e) {
+                console.error(e);
+                document.getElementById('cidade-texto').innerText = 'Não foi possível carregar as informações agora. Tente novamente em instantes.';
+                preencherGrid('grid-turismo', '', 'Conteúdo indisponível no momento.');
+                preencherGrid('grid-eventos', '', 'Conteúdo indisponível no momento.');
+                preencherGrid('grid-gastronomia', '', 'Conteúdo indisponível no momento.');
+                preencherGrid('grid-patrocinios', '', 'Conteúdo indisponível no momento.');
+            }
+        }
+
+        carregarClima();
+        registrarAcesso();
+        carregar();
+    </script>
 </body>
 </html>
+
+
+
+
