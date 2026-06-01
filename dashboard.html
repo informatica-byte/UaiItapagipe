@@ -58,6 +58,9 @@
         .btn-edit:hover, .btn-delete:hover { filter: brightness(0.95); }
         .tag { display: inline-block; font-size: 0.7rem; background: #eef2f7; color: var(--secondary); padding: 3px 8px; border-radius: 999px; text-transform: uppercase; margin-right: 10px; font-weight: 700; }
         .preview-img, .preview-video { max-height: 120px; max-width: 220px; display: block; margin-top: 10px; border-radius: 4px; object-fit: cover; border: 1px solid var(--border); background: #111; }
+        .gallery-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .gallery-preview img { width: 76px; height: 58px; object-fit: cover; border-radius: 5px; border: 1px solid var(--border); }
+        .help-text { color: var(--muted); font-size: 0.84rem; margin-top: 6px; }
         .btn-clear { background: #eef2f7; color: var(--secondary); border: 1px solid var(--border); padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: 700; margin-top: 8px; }
         .status-msg { margin-top: 12px; min-height: 22px; font-weight: 700; color: var(--muted); }
         .status-msg.sucesso { color: #16703a; }
@@ -119,6 +122,7 @@
                     <input type="hidden" id="edit-id">
                     <input type="hidden" id="imagem-base64">
                     <input type="hidden" id="video-local-base64">
+                    <input type="hidden" id="galeria-base64">
                     <div class="grid-form">
                         <div class="form-group">
                             <label for="tipo">Onde vai aparecer?</label>
@@ -141,6 +145,21 @@
                     </div>
                     <div class="grid-form">
                         <div class="form-group">
+                            <label for="whatsapp">WhatsApp de contato (opcional)</label>
+                            <input type="tel" id="whatsapp" placeholder="Ex: 34999999999">
+                        </div>
+                        <div class="form-group">
+                            <label for="endereco">Endereço ou referência (opcional)</label>
+                            <input type="text" id="endereco" placeholder="Ex: Praça Central, Itapagipe - MG">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mapa">Link do Google Maps (opcional)</label>
+                        <input type="url" id="mapa" placeholder="Cole o link de compartilhamento ou incorporação do Maps">
+                        <p class="help-text">Esse link será usado no botão "Ver mapa" e, quando possível, dentro da página do comércio.</p>
+                    </div>
+                    <div class="grid-form">
+                        <div class="form-group">
                             <label for="arquivo-imagem">Enviar foto ou logo</label>
                             <input type="file" id="arquivo-imagem" accept="image/*">
                             <img id="preview" class="preview-img" alt="Prévia da imagem" style="display:none;">
@@ -155,6 +174,12 @@
                         <input type="file" id="arquivo-video" accept="video/mp4,video/webm,video/ogg,video/*">
                         <video id="preview-video" class="preview-video" controls style="display:none;"></video>
                         <button type="button" id="btn-remover-video" class="btn-clear" style="display:none;">Remover vídeo local</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="arquivos-galeria">Galeria de fotos (opcional)</label>
+                        <input type="file" id="arquivos-galeria" accept="image/*" multiple>
+                        <div id="preview-galeria" class="gallery-preview"></div>
+                        <button type="button" id="btn-remover-galeria" class="btn-clear" style="display:none;">Remover galeria</button>
                     </div>
                     <button type="submit" id="btn-submit" class="btn-save">Publicar agora</button>
                     <button type="button" id="btn-cancelar" class="btn-delete" style="display:none; margin-top:10px; width:100%;">Cancelar edição</button>
@@ -198,6 +223,7 @@
         const statusForm = document.getElementById('status-form');
         const btnSubmit = document.getElementById('btn-submit');
         const LIMITE_VIDEO_MB = 20;
+        const LIMITE_GALERIA = 6;
 
         function escapeHTML(valor) {
             return String(valor || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -420,6 +446,45 @@
             mostrarStatus('Vídeo local removido.');
         });
 
+        function renderizarGaleriaPreview(fotos = []) {
+            const galeria = Array.isArray(fotos) ? fotos : [];
+            const previewGaleria = document.getElementById('preview-galeria');
+            previewGaleria.innerHTML = galeria.map((foto, index) => `<img src="${escapeHTML(foto)}" alt="Foto ${index + 1} da galeria">`).join('');
+            document.getElementById('btn-remover-galeria').style.display = galeria.length ? 'inline-block' : 'none';
+        }
+
+        document.getElementById('arquivos-galeria').addEventListener('change', async function(e) {
+            const arquivos = Array.from(e.target.files || []).slice(0, LIMITE_GALERIA);
+            if (!arquivos.length) return;
+            if (arquivos.some((file) => !file.type.startsWith('image/'))) {
+                mostrarStatus('Escolha apenas arquivos de imagem para a galeria.', 'erro');
+                e.target.value = '';
+                return;
+            }
+            mostrarStatus(`Carregando até ${LIMITE_GALERIA} fotos da galeria...`);
+            try {
+                const fotos = await Promise.all(arquivos.map((file) => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => resolve(event.target.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                })));
+                document.getElementById('galeria-base64').value = JSON.stringify(fotos);
+                renderizarGaleriaPreview(fotos);
+                mostrarStatus('Galeria carregada. Publique para salvar as fotos.', 'sucesso');
+            } catch (erro) {
+                console.error(erro);
+                mostrarStatus('Não foi possível carregar a galeria.', 'erro');
+            }
+        });
+
+        document.getElementById('btn-remover-galeria').addEventListener('click', () => {
+            document.getElementById('arquivos-galeria').value = '';
+            document.getElementById('galeria-base64').value = '';
+            renderizarGaleriaPreview([]);
+            mostrarStatus('Galeria removida.');
+        });
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const idEditando = document.getElementById('edit-id').value;
@@ -430,7 +495,11 @@
                 tipo: document.getElementById('tipo').value,
                 titulo: document.getElementById('titulo').value.trim(),
                 descricao: document.getElementById('descricao').value.trim(),
+                whatsapp: document.getElementById('whatsapp').value.trim(),
+                endereco: document.getElementById('endereco').value.trim(),
+                mapa: document.getElementById('mapa').value.trim(),
                 imagem: document.getElementById('imagem-base64').value,
+                galeria: JSON.parse(document.getElementById('galeria-base64').value || '[]'),
                 video: document.getElementById('video').value.trim(),
                 videoLocal: document.getElementById('video-local-base64').value,
                 data: Date.now()
@@ -501,9 +570,14 @@
             document.getElementById('tipo').value = item.tipo || 'turismo';
             document.getElementById('titulo').value = item.titulo || '';
             document.getElementById('descricao').value = item.descricao || '';
+            document.getElementById('whatsapp').value = item.whatsapp || '';
+            document.getElementById('endereco').value = item.endereco || '';
+            document.getElementById('mapa').value = item.mapa || '';
             document.getElementById('imagem-base64').value = item.imagem || '';
+            document.getElementById('galeria-base64').value = JSON.stringify(item.galeria || []);
             document.getElementById('video').value = item.video || '';
             document.getElementById('video-local-base64').value = item.videoLocal || '';
+            renderizarGaleriaPreview(item.galeria || []);
             const preview = document.getElementById('preview');
             if (item.imagem) {
                 preview.src = item.imagem;
@@ -533,7 +607,9 @@
             document.getElementById('edit-id').value = '';
             document.getElementById('imagem-base64').value = '';
             document.getElementById('video-local-base64').value = '';
+            document.getElementById('galeria-base64').value = '';
             document.getElementById('preview').style.display = 'none';
+            renderizarGaleriaPreview([]);
             const previewVideo = document.getElementById('preview-video');
             previewVideo.removeAttribute('src');
             previewVideo.style.display = 'none';
