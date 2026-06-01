@@ -353,7 +353,8 @@
                 if (!token) throw new Error('Sessão expirada');
                 const res = await fetch(urlAcessos(token));
                 if (!res.ok) throw new Error('Falha ao carregar acessos');
-                const valor = Number(await res.json()) || 0;
+                const dados = await res.json();
+                const valor = typeof dados === 'number' ? dados : Object.keys(dados || {}).length;
                 total.innerText = valor.toLocaleString('pt-BR');
             } catch (erro) {
                 console.error(erro);
