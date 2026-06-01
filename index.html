@@ -40,6 +40,8 @@
         .info-value { color: var(--secondary); font-size: clamp(1.15rem, 3vw, 1.65rem); line-height: 1.1; font-weight: 900; margin-top: 3px; }
         .info-detail { color: var(--muted); font-size: 0.86rem; margin-top: 2px; }
         .info-icon { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; color: var(--secondary); background: var(--sky); font-weight: 900; flex: 0 0 auto; }
+        .radio-link { color: var(--secondary); background: var(--accent); text-decoration: none; font-weight: 900; padding: 10px 13px; border-radius: 999px; white-space: nowrap; box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+        .radio-link:hover, .radio-link:focus { filter: brightness(0.96); outline: 3px solid rgba(255,183,3,0.28); }
         .container { max-width: 1120px; margin: 24px auto; padding: 0 20px; }
         section { background: rgba(255,255,255,0.92); padding: 30px; margin-bottom: 22px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,48,73,0.08); border: 1px solid rgba(6,70,99,0.08); }
         h2 { color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 7px; margin-bottom: 20px; line-height: 1.25; }
@@ -85,6 +87,8 @@
             nav { position: static; padding: 8px; }
             nav a { display: block; padding: 11px 12px; border-radius: 999px; }
             .info-strip { grid-template-columns: 1fr; padding: 0 14px; }
+            .info-pill { align-items: flex-start; flex-direction: column; }
+            .radio-link { width: 100%; text-align: center; }
             .search-panel { padding: 0 14px; }
             .search-box { grid-template-columns: 1fr; }
             .container { padding: 0 14px; }
@@ -103,6 +107,7 @@
             <div class="hero-actions">
                 <a href="#turismo">Explorar passeios</a>
                 <a href="#eventos" class="secondary">Ver entretenimento</a>
+                <a href="http://play.radios.com.br/13476" target="_blank" rel="noopener">Ouvir rádio ao vivo</a>
             </div>
         </div>
     </header>
@@ -121,6 +126,14 @@
                 <p class="info-detail" id="clima-desc">Atualizando previsão</p>
             </div>
             <span class="info-icon" id="clima-icon">Sol</span>
+        </div>
+        <div class="info-pill">
+            <div>
+                <p class="info-label">Rádio local</p>
+                <p class="info-value">Ao vivo agora</p>
+                <p class="info-detail">Escute a programação local enquanto navega pelo guia.</p>
+            </div>
+            <a class="radio-link" href="http://play.radios.com.br/13476" target="_blank" rel="noopener">Ouvir rádio</a>
         </div>
     </div>
     <div class="search-panel" aria-label="Busca e filtros">
