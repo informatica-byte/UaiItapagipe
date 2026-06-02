@@ -161,6 +161,7 @@
             <p class="section-kicker">Conheça a cidade</p>
             <h2 id="cidade-titulo">Sobre Itapagipe - MG</h2>
             <p id="cidade-texto">Carregando história da cidade...</p>
+            <div id="cidade-midia"></div>
         </section>
         <section id="turismo">
             <p class="section-kicker">Para visitar</p>
@@ -409,6 +410,7 @@
                 if (ultimaCidade) {
                     document.getElementById('cidade-titulo').innerText = ultimaCidade.titulo || 'Sobre Itapagipe - MG';
                     document.getElementById('cidade-texto').innerText = ultimaCidade.descricao || '';
+                    document.getElementById('cidade-midia').innerHTML = cardMidia(ultimaCidade);
                 }
                 renderizarConteudo();
             } catch (e) {
