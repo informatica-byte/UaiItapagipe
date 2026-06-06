@@ -343,8 +343,12 @@
             }
         }
 
+        function galeriaItem(item) {
+            return Array.isArray(item.galeria) ? item.galeria.filter(Boolean) : [];
+        }
+
         function temMidia(item) {
-            return Boolean(item.videoLocal || item.video || item.imagem);
+            return Boolean(item.videoLocal || item.video || item.imagem || galeriaItem(item).length);
         }
 
         function cardMidia(item, modo = 'card') {
@@ -352,14 +356,16 @@
             const tiktokId = getTikTok(item.video || '');
             const instagramEmbed = getInstagramEmbed(item.video || '');
             const facebookEmbed = getFacebookEmbed(item.video || '');
+            const fotosGaleria = galeriaItem(item);
+            const imagemPrincipal = item.imagem || fotosGaleria[0] || '';
             const classe = modo === 'preview' ? 'preview-media' : 'video-frame';
             if (item.videoLocal) return `<video class="${modo === 'preview' ? 'preview-media' : 'local-video'}" src="${escapeHTML(item.videoLocal)}" controls preload="metadata" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}"></video>`;
             if (videoId) return `<iframe class="${classe}" src="https://www.youtube.com/embed/${videoId}" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
             if (tiktokId) return `<iframe class="${classe}" src="https://www.tiktok.com/embed/v2/${tiktokId}" title="TikTok de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
             if (instagramEmbed) return `<iframe class="${classe}" src="${escapeHTML(instagramEmbed)}" title="Instagram de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
             if (facebookEmbed) return `<iframe class="${classe}" src="${escapeHTML(facebookEmbed)}" title="Facebook de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
-            if (item.imagem && modo === 'preview') return `<img src="${escapeHTML(item.imagem)}" class="preview-media" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}">`;
-            if (item.imagem) return `<button class="media-preview-trigger" type="button" data-preview="${escapeHTML(item.id)}" aria-label="Abrir prévia de ${escapeHTML(item.titulo || 'imagem')}"><img src="${escapeHTML(item.imagem)}" class="card-img" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}"></button>`;
+            if (imagemPrincipal && modo === 'preview') return `<img src="${escapeHTML(imagemPrincipal)}" class="preview-media" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}">`;
+            if (imagemPrincipal) return `<button class="media-preview-trigger" type="button" data-preview="${escapeHTML(item.id)}" aria-label="Abrir prévia de ${escapeHTML(item.titulo || 'imagem')}"><img src="${escapeHTML(imagemPrincipal)}" class="card-img" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}"></button>`;
             return '';
         }
 
@@ -474,8 +480,10 @@
         function abrirPreview(id) {
             const item = dadosPublicos.find((registro) => registro.id === id);
             if (!item || !temMidia(item)) return;
+            const fotos = galeriaItem(item);
+            const galeria = fotos.length > 1 ? `<div class="gallery">${fotos.map((foto, index) => `<img src="${escapeHTML(foto)}" alt="Foto ${index + 1} de ${escapeHTML(item.titulo || 'galeria')}">`).join('')}</div>` : '';
             document.getElementById('midia-titulo').innerText = item.titulo || 'Prévia';
-            document.getElementById('midia-conteudo').innerHTML = cardMidia(item, 'preview');
+            document.getElementById('midia-conteudo').innerHTML = `${cardMidia(item, 'preview')}${galeria}`;
             document.getElementById('midia-modal').classList.add('open');
             document.getElementById('midia-modal').setAttribute('aria-hidden', 'false');
         }
