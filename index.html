@@ -66,6 +66,10 @@
         .btn-whatsapp { background: #1fa855; color: #fff; }
         .btn-map { background: var(--secondary); color: #fff; }
         .btn-details { background: var(--accent); color: var(--secondary); }
+        .btn-preview { background: var(--leaf); color: #fff; }
+        .media-preview-trigger { display: block; width: 100%; border: 0; padding: 0; background: #111; cursor: zoom-in; }
+        .preview-media { width: 100%; max-height: 72vh; object-fit: contain; border: 0; background: #111; display: block; }
+        iframe.preview-media { height: min(72vh, 560px); }
         .contact-section { max-width: 1120px; margin: 18px auto 0; padding: 0 20px; }
         .contact-box { background: rgba(255,255,255,0.7); border: 1px solid rgba(6,70,99,0.08); border-radius: 8px; padding: 18px 20px; color: var(--muted); }
         .contact-box h2 { color: var(--secondary); border-bottom: 0; padding-bottom: 0; margin-bottom: 10px; font-size: 1.05rem; }
@@ -201,6 +205,15 @@
             <div class="modal-body" id="detalhe-conteudo"></div>
         </article>
     </div>
+    <div class="modal" id="midia-modal" aria-hidden="true">
+        <article class="modal-card" role="dialog" aria-modal="true" aria-labelledby="midia-titulo">
+            <div class="modal-head">
+                <h3 id="midia-titulo"></h3>
+                <button class="modal-close" type="button" id="fechar-midia" aria-label="Fechar">X</button>
+            </div>
+            <div class="modal-body" id="midia-conteudo"></div>
+        </article>
+    </div>
     <footer>
         <p>&copy; 2026 Uai Sô, Itapagipe - Guia de Turismo e Entretenimento Local.</p>
         <p style="margin-top: 8px; font-size: 0.8rem; opacity: 0.8;">Desenvolvido por <a href="#">Conexão Digital Informatica</a></p>
@@ -330,17 +343,23 @@
             }
         }
 
-        function cardMidia(item) {
+        function temMidia(item) {
+            return Boolean(item.videoLocal || item.video || item.imagem);
+        }
+
+        function cardMidia(item, modo = 'card') {
             const videoId = getYT(item.video || '');
             const tiktokId = getTikTok(item.video || '');
             const instagramEmbed = getInstagramEmbed(item.video || '');
             const facebookEmbed = getFacebookEmbed(item.video || '');
-            if (item.videoLocal) return `<video class="local-video" src="${escapeHTML(item.videoLocal)}" controls preload="metadata" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}"></video>`;
-            if (videoId) return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
-            if (tiktokId) return `<iframe class="video-frame" src="https://www.tiktok.com/embed/v2/${tiktokId}" title="TikTok de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
-            if (instagramEmbed) return `<iframe class="video-frame" src="${escapeHTML(instagramEmbed)}" title="Instagram de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
-            if (facebookEmbed) return `<iframe class="video-frame" src="${escapeHTML(facebookEmbed)}" title="Facebook de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
-            if (item.imagem) return `<img src="${escapeHTML(item.imagem)}" class="card-img" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}">`;
+            const classe = modo === 'preview' ? 'preview-media' : 'video-frame';
+            if (item.videoLocal) return `<video class="${modo === 'preview' ? 'preview-media' : 'local-video'}" src="${escapeHTML(item.videoLocal)}" controls preload="metadata" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}"></video>`;
+            if (videoId) return `<iframe class="${classe}" src="https://www.youtube.com/embed/${videoId}" title="Vídeo de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (tiktokId) return `<iframe class="${classe}" src="https://www.tiktok.com/embed/v2/${tiktokId}" title="TikTok de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (instagramEmbed) return `<iframe class="${classe}" src="${escapeHTML(instagramEmbed)}" title="Instagram de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (facebookEmbed) return `<iframe class="${classe}" src="${escapeHTML(facebookEmbed)}" title="Facebook de ${escapeHTML(item.titulo || 'conteúdo')}" allowfullscreen></iframe>`;
+            if (item.imagem && modo === 'preview') return `<img src="${escapeHTML(item.imagem)}" class="preview-media" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}">`;
+            if (item.imagem) return `<button class="media-preview-trigger" type="button" data-preview="${escapeHTML(item.id)}" aria-label="Abrir prévia de ${escapeHTML(item.titulo || 'imagem')}"><img src="${escapeHTML(item.imagem)}" class="card-img" alt="${escapeHTML(item.titulo || 'Imagem do conteúdo')}"></button>`;
             return '';
         }
 
@@ -353,6 +372,7 @@
                 <div class="card-actions">
                     ${linkWhats ? `<a class="btn-whatsapp" href="${escapeHTML(linkWhats)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
                     ${linkMapa ? `<a class="btn-map" href="${escapeHTML(linkMapa)}" target="_blank" rel="noopener">Ver mapa</a>` : ''}
+                    ${temMidia(item) ? `<button class="btn-preview" type="button" data-preview="${escapeHTML(item.id)}">Prévia</button>` : ''}
                     <button class="btn-details" type="button" data-detalhe="${escapeHTML(item.id)}">Detalhes</button>
                 </div>`;
             return `<article class="card">${cardMidia(item)}<div class="card-content"><h3>${escapeHTML(item.titulo || 'Sem título')}</h3><p>${escapeHTML(resumo)}</p>${endereco}${actions}</div></article>`;
@@ -451,6 +471,21 @@
             document.getElementById('detalhe-modal').setAttribute('aria-hidden', 'true');
         }
 
+        function abrirPreview(id) {
+            const item = dadosPublicos.find((registro) => registro.id === id);
+            if (!item || !temMidia(item)) return;
+            document.getElementById('midia-titulo').innerText = item.titulo || 'Prévia';
+            document.getElementById('midia-conteudo').innerHTML = cardMidia(item, 'preview');
+            document.getElementById('midia-modal').classList.add('open');
+            document.getElementById('midia-modal').setAttribute('aria-hidden', 'false');
+        }
+
+        function fecharPreview() {
+            document.getElementById('midia-modal').classList.remove('open');
+            document.getElementById('midia-modal').setAttribute('aria-hidden', 'true');
+            document.getElementById('midia-conteudo').innerHTML = '';
+        }
+
         document.getElementById('busca').addEventListener('input', renderizarConteudo);
         document.querySelectorAll('.filter-btn').forEach((botao) => {
             botao.addEventListener('click', () => {
@@ -462,16 +497,26 @@
         });
 
         document.body.addEventListener('click', (event) => {
+            const preview = event.target.closest('[data-preview]');
+            if (preview) abrirPreview(preview.dataset.preview);
+
             const detalhe = event.target.closest('[data-detalhe]');
             if (detalhe) abrirDetalhe(detalhe.dataset.detalhe);
         });
 
         document.getElementById('fechar-modal').addEventListener('click', fecharDetalhe);
+        document.getElementById('fechar-midia').addEventListener('click', fecharPreview);
         document.getElementById('detalhe-modal').addEventListener('click', (event) => {
             if (event.target.id === 'detalhe-modal') fecharDetalhe();
         });
+        document.getElementById('midia-modal').addEventListener('click', (event) => {
+            if (event.target.id === 'midia-modal') fecharPreview();
+        });
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') fecharDetalhe();
+            if (event.key === 'Escape') {
+                fecharDetalhe();
+                fecharPreview();
+            }
         });
 
         carregarClima();
