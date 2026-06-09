@@ -53,6 +53,10 @@
         .item-info { min-width: 0; }
         .item-info strong { overflow-wrap: anywhere; }
         .item-date { color: var(--muted); font-size: 0.86rem; margin-top: 5px; }
+        .item-flags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .flag { background: #f3f6fa; color: var(--secondary); border: 1px solid var(--border); border-radius: 999px; padding: 3px 8px; font-size: 0.72rem; font-weight: 800; }
+        .manage-tools { display: grid; grid-template-columns: minmax(180px, 260px) auto; gap: 12px; align-items: center; margin-bottom: 18px; }
+        .btn-export { background: #16703a; color: #fff; border: 0; padding: 11px 16px; border-radius: 8px; cursor: pointer; font-weight: 800; }
         .btn-actions { display: flex; gap: 10px; flex-shrink: 0; }
         .btn-edit { background: var(--accent); color: var(--secondary); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 700; }
         .btn-delete { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 700; }
@@ -75,6 +79,7 @@
             .sidebar-status { margin-top: 8px; }
             .main { padding: 24px 16px; }
             .grid-form { grid-template-columns: 1fr; gap: 0; }
+            .manage-tools { grid-template-columns: 1fr; }
             .item-lista { align-items: flex-start; flex-direction: column; }
             .btn-actions, .btn-actions button { width: 100%; }
         }
@@ -146,6 +151,16 @@
                     </div>
                     <div class="grid-form">
                         <div class="form-group">
+                            <label for="data-evento">Data do evento (opcional)</label>
+                            <input type="date" id="data-evento">
+                        </div>
+                        <div class="form-group">
+                            <label for="hora-evento">Horário do evento (opcional)</label>
+                            <input type="time" id="hora-evento">
+                        </div>
+                    </div>
+                    <div class="grid-form">
+                        <div class="form-group">
                             <label for="whatsapp">WhatsApp de contato (opcional)</label>
                             <input type="tel" id="whatsapp" placeholder="Ex: 34999999999">
                         </div>
@@ -189,6 +204,17 @@
             </section>
             <section class="card">
                 <h2 style="margin-bottom: 20px; color: #003049;">Gerenciar o que já existe</h2>
+                <div class="manage-tools">
+                    <select id="filtro-lista" aria-label="Filtrar itens do dashboard">
+                        <option value="todos">Todos os conteúdos</option>
+                        <option value="cidade">Sobre a Cidade</option>
+                        <option value="turismo">Turismo</option>
+                        <option value="eventos">Eventos</option>
+                        <option value="gastronomia">Onde Comer</option>
+                        <option value="patrocinadores">Patrocinadores</option>
+                    </select>
+                    <button type="button" id="btn-exportar" class="btn-export">Exportar backup</button>
+                </div>
                 <div id="listaItens"><p>Carregando...</p></div>
             </section>
         </main>
@@ -223,6 +249,7 @@
         const form = document.getElementById('formConteudo');
         const statusForm = document.getElementById('status-form');
         const btnSubmit = document.getElementById('btn-submit');
+        const filtroLista = document.getElementById('filtro-lista');
         const LIMITE_VIDEO_MB = 20;
         const LIMITE_GALERIA = 6;
 
@@ -235,6 +262,25 @@
             const dataPublicacao = new Date(data);
             if (Number.isNaN(dataPublicacao.getTime())) return 'Data de publicação não registrada';
             return `Publicado em ${dataPublicacao.toLocaleDateString('pt-BR')} às ${dataPublicacao.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+        }
+
+        function formatarDataEvento(data, hora) {
+            if (!data) return '';
+            const partes = String(data).split('-');
+            if (partes.length !== 3) return '';
+            const dataBR = `${partes[2]}/${partes[1]}/${partes[0]}`;
+            return hora ? `Evento em ${dataBR} às ${hora}` : `Evento em ${dataBR}`;
+        }
+
+        function indicadoresItem(item) {
+            const flags = [];
+            if (item.imagem) flags.push('foto');
+            if (Array.isArray(item.galeria) && item.galeria.length) flags.push('galeria');
+            if (item.video || item.videoLocal) flags.push('vídeo');
+            if (item.whatsapp) flags.push('WhatsApp');
+            if (item.mapa || item.endereco) flags.push('mapa');
+            if (item.dataEvento) flags.push('data');
+            return flags.map((flag) => `<span class="flag">${escapeHTML(flag)}</span>`).join('');
         }
 
         function mostrarStatus(mensagem, tipo = '') {
@@ -505,6 +551,8 @@
                 tipo: document.getElementById('tipo').value,
                 titulo: document.getElementById('titulo').value.trim(),
                 descricao: document.getElementById('descricao').value.trim(),
+                dataEvento: document.getElementById('data-evento').value,
+                horaEvento: document.getElementById('hora-evento').value,
                 whatsapp: document.getElementById('whatsapp').value.trim(),
                 endereco: document.getElementById('endereco').value.trim(),
                 mapa: document.getElementById('mapa').value.trim(),
@@ -544,6 +592,7 @@
                     return;
                 }
                 Object.entries(dados)
+                    .filter(([, item]) => filtroLista.value === 'todos' || item.tipo === filtroLista.value)
                     .sort((a, b) => (b[1].data || 0) - (a[1].data || 0))
                     .forEach(([id, item]) => {
                         const div = document.createElement('div');
@@ -553,6 +602,8 @@
                                 <span class="tag">${escapeHTML(item.tipo || 'sem tipo')}</span>
                                 <strong>${escapeHTML(item.titulo || 'Sem título')}</strong>
                                 <p class="item-date">${escapeHTML(formatarDataPublicacao(item.data))}</p>
+                                ${item.dataEvento ? `<p class="item-date">${escapeHTML(formatarDataEvento(item.dataEvento, item.horaEvento))}</p>` : ''}
+                                <div class="item-flags">${indicadoresItem(item)}</div>
                             </div>
                             <div class="btn-actions">
                                 <button class="btn-edit" type="button" data-acao="editar" data-id="${escapeHTML(id)}">Editar</button>
@@ -581,6 +632,8 @@
             document.getElementById('tipo').value = item.tipo || 'turismo';
             document.getElementById('titulo').value = item.titulo || '';
             document.getElementById('descricao').value = item.descricao || '';
+            document.getElementById('data-evento').value = item.dataEvento || '';
+            document.getElementById('hora-evento').value = item.horaEvento || '';
             document.getElementById('whatsapp').value = item.whatsapp || '';
             document.getElementById('endereco').value = item.endereco || '';
             document.getElementById('mapa').value = item.mapa || '';
@@ -619,6 +672,8 @@
             document.getElementById('imagem-base64').value = '';
             document.getElementById('video-local-base64').value = '';
             document.getElementById('galeria-base64').value = '';
+            document.getElementById('data-evento').value = '';
+            document.getElementById('hora-evento').value = '';
             document.getElementById('preview').style.display = 'none';
             renderizarGaleriaPreview([]);
             const previewVideo = document.getElementById('preview-video');
