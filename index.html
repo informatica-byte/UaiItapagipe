@@ -8,7 +8,7 @@
     <meta name="description" content="Guia local de Itapagipe-MG com turismo, eventos, gastronomia, parceiros, clima e informações úteis da cidade.">
     <meta property="og:title" content="Uai Sô, Itapagipe!">
     <meta property="og:description" content="Turismo, cultura, sabores e bons encontros em Itapagipe-MG.">
-    <meta property="og:image" content="dsc2262.jpg">
+    <meta property="og:image" content="https://www.uaisoitapagipe.com.br/dsc2262.jpg">
     <meta property="og:type" content="website">
     <style>
         :root {
@@ -127,7 +127,7 @@
             <div class="hero-actions">
                 <a href="#turismo">Explorar passeios</a>
                 <a href="#eventos" class="secondary">Ver entretenimento</a>
-                <a href="http://play.radios.com.br/13476" target="_blank" rel="noopener">Ouvir rádio ao vivo</a>
+                <a href="https://play.radios.com.br/13476" target="_blank" rel="noopener">Ouvir rádio ao vivo</a>
             </div>
         </div>
     </header>
@@ -154,7 +154,7 @@
                 <p class="info-value">Ao vivo agora</p>
                 <p class="info-detail">Escute a programação local enquanto navega pelo guia.</p>
             </div>
-            <a class="radio-link" href="http://play.radios.com.br/13476" target="_blank" rel="noopener">Ouvir rádio</a>
+            <a class="radio-link" href="https://play.radios.com.br/13476" target="_blank" rel="noopener">Ouvir rádio</a>
         </div>
     </div>
     <div class="search-panel" aria-label="Busca e filtros">
@@ -338,8 +338,10 @@
             try {
                 const jaContou = sessionStorage.getItem('uai-so-acesso-contado') === 'sim';
                 if (jaContou) return;
-                const resSalvar = await fetch(ACESSOS_URL, {
-                    method: 'POST',
+                // Gera um ID único por visita para evitar nós infinitos
+                const visitaId = `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+                const resSalvar = await fetch(`${FIREBASE_BASE_URL}/metricas/acessos/${visitaId}.json`, {
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         data: Date.now(),
@@ -404,6 +406,7 @@
             const resumo = String(item.descricao || '').length > 150 ? `${String(item.descricao || '').slice(0, 150)}...` : (item.descricao || '');
             const endereco = item.endereco ? `<p class="card-meta">${escapeHTML(item.endereco)}</p>` : '';
             const dataEvento = formatarEvento(item);
+            const encerrado = eventoEncerrado(item) ? `<span class="card-badge" style="background:#fee2e2;color:#b91c1c;">Encerrado</span>` : '';
             const actions = `
                 <div class="card-actions">
                     ${linkWhats ? `<a class="btn-whatsapp" href="${escapeHTML(linkWhats)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
@@ -411,7 +414,7 @@
                     ${temMidia(item) ? `<button class="btn-preview" type="button" data-preview="${escapeHTML(item.id)}">Prévia</button>` : ''}
                     <button class="btn-details" type="button" data-detalhe="${escapeHTML(item.id)}">Detalhes</button>
                 </div>`;
-            return `<article class="card">${cardMidia(item)}<div class="card-content"><span class="card-badge">${escapeHTML(nomeTipo(item.tipo))}</span><h3>${escapeHTML(item.titulo || 'Sem título')}</h3>${dataEvento ? `<p class="event-date">${escapeHTML(dataEvento)}</p>` : ''}<p>${escapeHTML(resumo)}</p>${endereco}${actions}</div></article>`;
+            return `<article class="card">${cardMidia(item)}<div class="card-content"><span class="card-badge">${escapeHTML(nomeTipo(item.tipo))}</span>${encerrado}<h3>${escapeHTML(item.titulo || 'Sem título')}</h3>${dataEvento ? `<p class="event-date">${escapeHTML(dataEvento)}</p>` : ''}<p>${escapeHTML(resumo)}</p>${endereco}${actions}</div></article>`;
         }
 
         function preencherGrid(id, html, vazio) {
@@ -420,8 +423,18 @@
 
         function itemCombinaComBusca(item, termo) {
             if (!termo) return true;
-            const alvo = normalizar([item.titulo, item.descricao, item.endereco, item.tipo].join(' '));
+            const alvo = normalizar([item.titulo, item.descricao, item.endereco, item.tipo, item.whatsapp].join(' '));
             return alvo.includes(termo);
+        }
+
+        function eventoEncerrado(item) {
+            if (!item.dataEvento || item.tipo !== 'eventos') return false;
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const partes = String(item.dataEvento).split('-');
+            if (partes.length !== 3) return false;
+            const dataEvento = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+            return dataEvento < hoje;
         }
 
         function renderizarConteudo() {

@@ -252,6 +252,7 @@
         const filtroLista = document.getElementById('filtro-lista');
         const LIMITE_VIDEO_MB = 20;
         const LIMITE_GALERIA = 6;
+        let formularioSujo = false;
 
         function escapeHTML(valor) {
             return String(valor || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -363,7 +364,11 @@
         async function fetchAutenticado(caminho, opcoes = {}) {
             const token = await obterToken();
             if (!token) throw new Error('Sessão expirada');
-            return fetch(urlBanco(caminho, token), opcoes);
+            const opcoesFinais = { ...opcoes };
+            if (opcoesFinais.body && !opcoesFinais.headers) {
+                opcoesFinais.headers = { 'Content-Type': 'application/json' };
+            }
+            return fetch(urlBanco(caminho, token), opcoesFinais);
         }
 
         async function entrar(email, senha) {
@@ -509,8 +514,12 @@
         }
 
         document.getElementById('arquivos-galeria').addEventListener('change', async function(e) {
-            const arquivos = Array.from(e.target.files || []).slice(0, LIMITE_GALERIA);
-            if (!arquivos.length) return;
+            const todosArquivos = Array.from(e.target.files || []);
+            if (!todosArquivos.length) return;
+            if (todosArquivos.length > LIMITE_GALERIA) {
+                mostrarStatus(`Você selecionou ${todosArquivos.length} fotos, mas o limite é ${LIMITE_GALERIA}. Apenas as ${LIMITE_GALERIA} primeiras serão usadas.`, 'erro');
+            }
+            const arquivos = todosArquivos.slice(0, LIMITE_GALERIA);
             if (arquivos.some((file) => !file.type.startsWith('image/'))) {
                 mostrarStatus('Escolha apenas arquivos de imagem para a galeria.', 'erro');
                 e.target.value = '';
@@ -567,6 +576,7 @@
                 const res = await fetchAutenticado(idEditando || '', { method: idEditando ? 'PUT' : 'POST', body: JSON.stringify(item) });
                 if (!res.ok) throw new Error('Falha ao salvar');
                 mostrarStatus(idEditando ? 'Item atualizado com sucesso.' : 'Novo item publicado com sucesso.', 'sucesso');
+                formularioSujo = false;
                 resgatarFormulario(false);
                 await carregarLista();
             } catch (erro) {
@@ -686,7 +696,35 @@
             if (limparStatus) mostrarStatus('');
         }
 
-        document.getElementById('btn-cancelar').addEventListener('click', () => resgatarFormulario());
+        document.getElementById('btn-exportar').addEventListener('click', () => {
+            if (!Object.keys(cacheDados).length) {
+                alert('Nenhum dado carregado para exportar. Aguarde o carregamento da lista.');
+                return;
+            }
+            const json = JSON.stringify(cacheDados, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup-uai-so-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        filtroLista.addEventListener('change', carregarLista);
+
+        form.addEventListener('input', () => { formularioSujo = true; });
+        window.addEventListener('beforeunload', (e) => {
+            if (formularioSujo && document.getElementById('edit-id').value) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        document.getElementById('btn-cancelar').addEventListener('click', () => {
+            resgatarFormulario();
+            formularioSujo = false;
+        });
 
         async function excluirItem(id) {
             if (!confirm('Tem certeza que deseja apagar permanentemente esse item do site?')) return;
