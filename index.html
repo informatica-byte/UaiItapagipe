@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="UDkeDnCzqYsV8ICJbCPzdU7luBOhHMDS1PHEHVHpMpc" />
     <title>Uai Sô, Itapagipe!</title>
-    <meta name="description" content="Guia local de Itapagipe-MG com turismo, eventos, gastronomia, parceiros, clima e informações úteis da cidade.">
+    <meta name="description" content="Guia local de Itapagipe-MG com notícias do dia, turismo, eventos, gastronomia, parceiros, clima e informações úteis da cidade.">
     <meta property="og:title" content="Uai Sô, Itapagipe!">
-    <meta property="og:description" content="Turismo, cultura, sabores e bons encontros em Itapagipe-MG.">
+    <meta property="og:description" content="Notícias do dia, turismo, cultura, sabores e bons encontros em Itapagipe-MG.">
     <meta property="og:image" content="https://www.uaisoitapagipe.com.br/dsc2262.jpg">
     <meta property="og:type" content="website">
     <style>
@@ -84,6 +84,7 @@
         .card-img, .video-frame, .local-video { width: 100%; height: 190px; object-fit: cover; border: none; background: #111; }
         .card-meta { color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
         .event-date { color: var(--primary); font-weight: 900; margin-bottom: 8px; }
+        .news-date { color: var(--secondary); font-weight: 900; margin-bottom: 8px; font-size: 0.92rem; }
         .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
         .card-actions a, .card-actions button { border: 0; border-radius: 999px; padding: 9px 12px; font-weight: 800; text-decoration: none; cursor: pointer; font-size: 0.9rem; }
         .btn-whatsapp { background: #1fa855; color: #fff; }
@@ -150,7 +151,7 @@
         <div class="hero-content">
             <span class="hero-badge">Turismo, cultura e bons encontros</span>
             <h1>Uai Sô, Itapagipe!</h1>
-            <p>O portal da nossa terra, com passeios, sabores, eventos e histórias para aproveitar melhor a cidade.</p>
+            <p>O portal da nossa terra, com notícias, passeios, sabores, eventos e histórias para aproveitar melhor a cidade.</p>
             <div class="hero-actions">
                 <a href="#turismo">Explorar passeios</a>
                 <a href="#eventos" class="secondary">Ver entretenimento</a>
@@ -160,6 +161,7 @@
     </header>
     <nav>
         <a href="#sobre">A Cidade</a>
+        <a href="#noticias">Notícias</a>
         <a href="#turismo">Turismo</a>
         <a href="#eventos">Entretenimento</a>
         <a href="#gastronomia">Onde Comer</a>
@@ -208,6 +210,7 @@
             </div>
             <div class="filter-buttons" aria-label="Filtros de conteúdo">
                 <button class="filter-btn active" type="button" data-filtro="todos">Todos</button>
+                <button class="filter-btn" type="button" data-filtro="noticias">Notícias</button>
                 <button class="filter-btn" type="button" data-filtro="turismo">Turismo</button>
                 <button class="filter-btn" type="button" data-filtro="eventos">Eventos</button>
                 <button class="filter-btn" type="button" data-filtro="gastronomia">Onde comer</button>
@@ -222,6 +225,11 @@
             <h2 id="cidade-titulo">Sobre Itapagipe - MG</h2>
             <p id="cidade-texto">Carregando história da cidade...</p>
             <div id="cidade-midia"></div>
+        </section>
+        <section id="noticias">
+            <p class="section-kicker">Atualidade local</p>
+            <h2>Notícias do Dia</h2>
+            <div class="grid" id="grid-noticias"><p class="empty">Carregando...</p></div>
         </section>
         <section id="turismo">
             <p class="section-kicker">Para visitar</p>
@@ -498,6 +506,7 @@
 
         function nomeTipo(tipo) {
             const nomes = {
+                noticias: 'Notícia',
                 turismo: 'Turismo',
                 eventos: 'Evento',
                 gastronomia: 'Onde comer',
@@ -515,6 +524,22 @@
             return item.horaEvento ? `${data} às ${item.horaEvento}` : data;
         }
 
+        function formatarPublicacao(item) {
+            if (!item.data) return '';
+            const data = new Date(item.data);
+            if (Number.isNaN(data.getTime())) return '';
+            return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        function noticiaHoje(item) {
+            if (item.tipo !== 'noticias' || !item.data) return false;
+            const data = new Date(item.data);
+            const hoje = new Date();
+            return data.getFullYear() === hoje.getFullYear()
+                && data.getMonth() === hoje.getMonth()
+                && data.getDate() === hoje.getDate();
+        }
+
         function montarCard(item) {
             const linkWhats = whatsappLink(item.whatsapp, item.titulo);
             const linkMapa = mapaLink(item);
@@ -522,6 +547,7 @@
             const endereco = item.endereco ? `<p class="card-meta">${escapeHTML(item.endereco)}</p>` : '';
             const dataEvento = formatarEvento(item);
             const encerrado = eventoEncerrado(item) ? `<span class="card-badge" style="background:#fee2e2;color:#b91c1c;">Encerrado</span>` : '';
+            const dataNoticia = item.tipo === 'noticias' && formatarPublicacao(item) ? `<p class="news-date">${noticiaHoje(item) ? 'Hoje' : 'Publicado em'} ${escapeHTML(formatarPublicacao(item))}</p>` : '';
             const actions = `
                 <div class="card-actions">
                     ${linkWhats ? `<a class="btn-whatsapp" href="${escapeHTML(linkWhats)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
@@ -530,7 +556,7 @@
                     <button class="btn-details" type="button" data-detalhe="${escapeHTML(item.id)}">Detalhes</button>
                     <button class="btn-share" type="button" data-share="${escapeHTML(item.id)}">Compartilhar</button>
                 </div>`;
-            return `<article class="card">${cardMidia(item)}<div class="card-content"><span class="card-badge">${escapeHTML(nomeTipo(item.tipo))}</span>${encerrado}<h3>${escapeHTML(item.titulo || 'Sem título')}</h3>${dataEvento ? `<p class="event-date">${escapeHTML(dataEvento)}</p>` : ''}<p>${escapeHTML(resumo)}</p>${endereco}${actions}</div></article>`;
+            return `<article class="card">${cardMidia(item)}<div class="card-content"><span class="card-badge">${escapeHTML(nomeTipo(item.tipo))}</span>${encerrado}<h3>${escapeHTML(item.titulo || 'Sem título')}</h3>${dataEvento ? `<p class="event-date">${escapeHTML(dataEvento)}</p>` : ''}${dataNoticia}<p>${escapeHTML(resumo)}</p>${endereco}${actions}</div></article>`;
         }
 
         function preencherGrid(id, html, vazio) {
@@ -586,9 +612,10 @@
 
         function renderizarConteudo() {
             const termo = normalizar(document.getElementById('busca').value);
-            const grids = { turismo: '', eventos: '', gastronomia: '', patrocinadores: '' };
+            const grids = { noticias: '', turismo: '', eventos: '', gastronomia: '', patrocinadores: '' };
             const itensFiltrados = dadosPublicos
                 .filter((item) => item.tipo !== 'cidade')
+                .filter((item) => item.tipo !== 'noticias' || noticiaHoje(item))
                 .filter((item) => filtroAtivo === 'todos' || item.tipo === filtroAtivo)
                 .filter((item) => itemCombinaComBusca(item, termo))
                 .sort((a, b) => {
@@ -600,12 +627,14 @@
             itensFiltrados
                 .forEach((item) => {
                     const html = montarCard(item);
-                    if (item.tipo === 'patrocinadores') grids.patrocinadores += html;
+                    if (item.tipo === 'noticias') grids.noticias += html;
+                    else if (item.tipo === 'patrocinadores') grids.patrocinadores += html;
                     else if (item.tipo === 'eventos') grids.eventos += html;
                     else if (item.tipo === 'gastronomia') grids.gastronomia += html;
                     else grids.turismo += html;
                 });
 
+            preencherGrid('grid-noticias', grids.noticias, 'Nenhuma notícia publicada hoje.');
             preencherGrid('grid-turismo', grids.turismo, 'Nenhum passeio encontrado.');
             preencherGrid('grid-eventos', grids.eventos, 'Nenhum evento encontrado.');
             preencherGrid('grid-gastronomia', grids.gastronomia, 'Nenhum local encontrado.');
@@ -625,6 +654,7 @@
                 const dados = await res.json();
                 if (!dados) {
                     dadosPublicos = [];
+                    preencherGrid('grid-noticias', '', 'Nenhuma notícia cadastrada ainda.');
                     preencherGrid('grid-turismo', '', 'Nenhum passeio cadastrado ainda.');
                     preencherGrid('grid-eventos', '', 'Nenhum evento cadastrado ainda.');
                     preencherGrid('grid-gastronomia', '', 'Nenhum local cadastrado ainda.');
@@ -648,6 +678,7 @@
                 console.error(e);
                 document.getElementById('cidade-texto').innerText = 'Não foi possível carregar as informações agora. Tente novamente em instantes.';
                 preencherGrid('grid-turismo', '', 'Conteúdo indisponível no momento.');
+                preencherGrid('grid-noticias', '', 'Conteúdo indisponível no momento.');
                 preencherGrid('grid-eventos', '', 'Conteúdo indisponível no momento.');
                 preencherGrid('grid-gastronomia', '', 'Conteúdo indisponível no momento.');
                 preencherGrid('grid-patrocinios', '', 'Conteúdo indisponível no momento.');

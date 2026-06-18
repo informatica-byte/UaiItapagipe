@@ -134,6 +134,11 @@
                     <p class="stat-value" id="dashboard-eventos">0</p>
                     <p class="stat-detail">Agenda ainda ativa</p>
                 </section>
+                <section class="stat-card secondary">
+                    <p class="stat-label">Notícias de hoje</p>
+                    <p class="stat-value" id="dashboard-noticias">0</p>
+                    <p class="stat-detail">Publicadas na data atual</p>
+                </section>
             </div>
             <section class="card">
                 <h2 id="form-titulo" style="margin-bottom: 20px; color: #8b0000;">Novo conteúdo ou patrocinador</h2>
@@ -147,6 +152,7 @@
                             <label for="tipo">Onde vai aparecer?</label>
                             <select id="tipo" required>
                                 <option value="cidade">Sobre a Cidade (Texto Principal)</option>
+                                <option value="noticias">Notícias do Dia</option>
                                 <option value="turismo">Turismo e Lazer</option>
                                 <option value="eventos">Entretenimento e Cultura</option>
                                 <option value="gastronomia">Onde Comer</option>
@@ -221,6 +227,7 @@
                     <select id="filtro-lista" aria-label="Filtrar itens do dashboard">
                         <option value="todos">Todos os conteúdos</option>
                         <option value="cidade">Sobre a Cidade</option>
+                        <option value="noticias">Notícias</option>
                         <option value="turismo">Turismo</option>
                         <option value="eventos">Eventos</option>
                         <option value="gastronomia">Onde Comer</option>
@@ -288,10 +295,20 @@
             return dataEvento >= hoje;
         }
 
+        function noticiaHoje(item) {
+            if (item.tipo !== 'noticias' || !item.data) return false;
+            const data = new Date(item.data);
+            const hoje = new Date();
+            return data.getFullYear() === hoje.getFullYear()
+                && data.getMonth() === hoje.getMonth()
+                && data.getDate() === hoje.getDate();
+        }
+
         function atualizarResumoDashboard(dados) {
             const itens = Object.values(dados || {});
             document.getElementById('dashboard-conteudos').innerText = itens.length.toLocaleString('pt-BR');
             document.getElementById('dashboard-eventos').innerText = itens.filter(eventoFuturo).length.toLocaleString('pt-BR');
+            document.getElementById('dashboard-noticias').innerText = itens.filter(noticiaHoje).length.toLocaleString('pt-BR');
         }
 
         function formatarDataPublicacao(data) {
