@@ -47,6 +47,17 @@
         .info-icon { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; color: var(--secondary); background: var(--sky); font-weight: 900; flex: 0 0 auto; }
         .radio-link { color: var(--secondary); background: var(--accent); text-decoration: none; font-weight: 900; padding: 10px 13px; border-radius: 999px; white-space: nowrap; box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
         .radio-link:hover, .radio-link:focus { filter: brightness(0.96); outline: 3px solid rgba(255,183,3,0.28); }
+        .horoscope-panel { max-width: 1120px; margin: 18px auto 0; padding: 0 20px; }
+        .horoscope-box { background: #fff; border: 1px solid rgba(6,70,99,0.12); border-left: 5px solid var(--sun); border-radius: 8px; box-shadow: 0 10px 28px rgba(0,48,73,0.08); padding: 18px; display: grid; gap: 14px; }
+        .horoscope-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+        .horoscope-title { color: var(--primary); font-size: clamp(1.25rem, 3vw, 1.65rem); line-height: 1.15; font-weight: 900; }
+        .horoscope-date { color: var(--muted); font-size: 0.88rem; font-weight: 700; margin-top: 3px; }
+        .horoscope-sign { color: var(--secondary); background: var(--sky); border-radius: 999px; padding: 8px 12px; font-weight: 900; white-space: nowrap; }
+        .zodiac-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+        .zodiac-btn { border: 1px solid rgba(6,70,99,0.14); background: #f7fbff; color: var(--secondary); border-radius: 999px; padding: 9px 12px; cursor: pointer; font-weight: 800; }
+        .zodiac-btn.active, .zodiac-btn:hover, .zodiac-btn:focus { background: var(--primary); color: #fff; outline: none; }
+        .horoscope-text { color: var(--text); font-size: 1rem; }
+        .horoscope-note { color: var(--muted); font-size: 0.84rem; }
         .container { max-width: 1120px; margin: 24px auto; padding: 0 20px; }
         section { background: rgba(255,255,255,0.92); padding: 30px; margin-bottom: 22px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,48,73,0.08); border: 1px solid rgba(6,70,99,0.08); }
         h2 { color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 7px; margin-bottom: 20px; line-height: 1.25; }
@@ -118,6 +129,9 @@
             .info-strip { grid-template-columns: 1fr; padding: 0 14px; }
             .info-pill { align-items: flex-start; flex-direction: column; }
             .radio-link { width: 100%; text-align: center; }
+            .horoscope-panel { padding: 0 14px; }
+            .horoscope-head { flex-direction: column; }
+            .horoscope-sign { white-space: normal; }
             .search-panel { padding: 0 14px; }
             .contact-section { padding: 0 14px; }
             .search-box { grid-template-columns: 1fr; }
@@ -150,6 +164,7 @@
         <a href="#eventos">Entretenimento</a>
         <a href="#gastronomia">Onde Comer</a>
         <a href="#patrocinadores">Patrocinadores</a>
+        <a href="#horoscopo">Horóscopo</a>
         <a href="#fale-conosco">Fale conosco</a>
     </nav>
     <div class="info-strip" aria-label="Informações rápidas">
@@ -170,6 +185,21 @@
             <a class="radio-link" href="https://play.radios.com.br/13476" target="_blank" rel="noopener">Ouvir rádio</a>
         </div>
     </div>
+    <section class="horoscope-panel" id="horoscopo" aria-labelledby="horoscopo-titulo">
+        <div class="horoscope-box">
+            <div class="horoscope-head">
+                <div>
+                    <p class="section-kicker">Astral do dia</p>
+                    <h2 class="horoscope-title" id="horoscopo-titulo">Horóscopo de hoje</h2>
+                    <p class="horoscope-date" id="horoscopo-data">Atualizando previsão astral...</p>
+                </div>
+                <span class="horoscope-sign" id="horoscopo-signo">Áries</span>
+            </div>
+            <div class="zodiac-buttons" id="botoes-signos" aria-label="Escolha seu signo"></div>
+            <p class="horoscope-text" id="horoscopo-texto">Carregando mensagem do dia...</p>
+            <p class="horoscope-note">Uma leitura leve para começar o dia com intenção.</p>
+        </div>
+    </section>
     <div class="search-panel" aria-label="Busca e filtros">
         <div class="search-box">
             <div class="search-field">
@@ -256,6 +286,29 @@
         let dadosPublicos = [];
         let filtroAtivo = 'todos';
         let toastTimer = null;
+        const signos = ['Áries', 'Touro', 'Gêmeos', 'Câncer', 'Leão', 'Virgem', 'Libra', 'Escorpião', 'Sagitário', 'Capricórnio', 'Aquário', 'Peixes'];
+        const mensagensHoroscopo = [
+            'O dia favorece conversas diretas e escolhas simples. Evite carregar mais tarefas do que precisa e priorize o que traz resultado concreto.',
+            'Sua atenção aos detalhes pode abrir uma boa oportunidade. Observe os sinais ao redor e responda com calma antes de decidir.',
+            'Há espaço para reorganizar planos e retomar algo que ficou pendente. Uma atitude prática vale mais do que tentar resolver tudo de uma vez.',
+            'A energia do dia pede equilíbrio entre movimento e descanso. Cuide do seu tempo e valorize os encontros que deixam a rotina mais leve.',
+            'Uma conversa pode trazer clareza para um assunto antigo. Fale com gentileza, mas não esconda o que realmente precisa ser dito.',
+            'Bom momento para cuidar de dinheiro, trabalho e compromissos. Pequenos ajustes feitos hoje podem evitar desgaste nos próximos dias.',
+            'O dia combina com presença e criatividade. Confie mais no seu jeito de resolver as coisas e menos na pressa dos outros.',
+            'Alguma intuição pode se confirmar ao longo do dia. Escute com atenção, mas cheque os fatos antes de agir.',
+            'As relações ganham força quando há colaboração. Peça ajuda se precisar e reconheça quem caminha junto com você.',
+            'Uma meta fica mais próxima quando você divide o caminho em etapas. Comece pelo que está ao seu alcance agora.',
+            'O dia favorece novidades, ideias e mudanças pequenas na rotina. Experimente um caminho diferente sem abandonar o que já funciona.',
+            'A sensibilidade está mais alta, mas isso pode ser uma vantagem. Use-a para perceber ambientes, pessoas e oportunidades com mais cuidado.'
+        ];
+        const conselhosHoroscopo = [
+            'No amor, vale ouvir antes de responder.',
+            'No trabalho, escolha foco em vez de pressa.',
+            'Na saúde, respeite seus intervalos.',
+            'Na família, uma palavra calma ajuda muito.',
+            'Nos planos, avance um passo possível.',
+            'Nas finanças, evite decisões por impulso.'
+        ];
 
 
         function getYT(url) {
@@ -335,6 +388,48 @@
                 95: ['Trovoadas', 'Tro']
             };
             return mapa[codigo] || ['Tempo atualizado', 'Cli'];
+        }
+
+        function chaveDataLocal() {
+            const agora = new Date();
+            const ano = agora.getFullYear();
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const dia = String(agora.getDate()).padStart(2, '0');
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        function indiceHoroscopo(signo) {
+            const base = `${chaveDataLocal()}-${signo}`;
+            return Array.from(base).reduce((total, letra) => total + letra.charCodeAt(0), 0);
+        }
+
+        function renderizarHoroscopo(signo = localStorage.getItem('uai-so-signo') || 'Áries') {
+            const indice = indiceHoroscopo(signo);
+            const mensagem = mensagensHoroscopo[indice % mensagensHoroscopo.length];
+            const conselho = conselhosHoroscopo[(indice + signos.indexOf(signo)) % conselhosHoroscopo.length];
+            document.getElementById('horoscopo-signo').innerText = signo;
+            document.getElementById('horoscopo-texto').innerText = `${mensagem} ${conselho}`;
+            document.getElementById('horoscopo-data').innerText = new Date().toLocaleDateString('pt-BR', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+            document.querySelectorAll('.zodiac-btn').forEach((botao) => {
+                botao.classList.toggle('active', botao.dataset.signo === signo);
+                botao.setAttribute('aria-pressed', String(botao.dataset.signo === signo));
+            });
+            localStorage.setItem('uai-so-signo', signo);
+        }
+
+        function iniciarHoroscopo() {
+            const container = document.getElementById('botoes-signos');
+            container.innerHTML = signos.map((signo) => `<button class="zodiac-btn" type="button" data-signo="${escapeHTML(signo)}">${escapeHTML(signo)}</button>`).join('');
+            container.addEventListener('click', (event) => {
+                const botao = event.target.closest('[data-signo]');
+                if (botao) renderizarHoroscopo(botao.dataset.signo);
+            });
+            renderizarHoroscopo();
         }
 
         async function carregarClima() {
@@ -657,6 +752,7 @@
             document.getElementById('voltar-topo').classList.toggle('visible', window.scrollY > 520);
         }, { passive: true });
 
+        iniciarHoroscopo();
         carregarClima();
         registrarAcesso();
         carregar();
